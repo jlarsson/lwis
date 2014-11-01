@@ -30,7 +30,8 @@
                 if (err) {
                     return next();
                 }
-                blob.createReadStream().pipe(res);
+                //blob.createReadStream().pipe(res);
+                blob.send(req,res);
             }
 
             function onGetFile(err, file) {

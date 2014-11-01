@@ -1,4 +1,4 @@
-var debug = require('debug')('grfxsrv');
+var debug = require('debug')('lwis');
 var app = require('./app');
 
 app.set('port', process.env.PORT || 3000);
