@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title><%= @title %></title>
+        <meta name="description" content="" />
+        <meta name="keywords" content="" />
+        <link rel="stylesheet" href="/css/styles.min.css"/>
+    </head>
+    <body>
+        <% include 'header.ect' %>
+        <div class="container">
+            <% content %>
+        </div>
+        <% include 'footer.ect' %>
+        
+        <script type="text/javascript" src="/js/scripts.min.js"></script>        
+        <% content 'scripts' %>
+    </body>
+</html>

@@ -1,0 +1,22 @@
+<% extend 'layout.ect' %>
+
+<h1>Repository</h1>
+
+<table class="table table-bordered table-condensed">
+    <tr>
+        <th>Name</th>
+        <th>Size</th>
+        <th>Mime type</th>
+        <th>Created</th>
+        <th>Hash</th>
+    </tr>
+<% for file in @files : %>
+    <tr>
+        <td><a href="download/<%- file.id %>"><%- file.file.name %></a></td>
+        <td><%- file.file.size %></td>
+        <td><%- file.mimetype %></td>
+        <td><%- file.created %></td>
+        <td><%- file.blob.hash %></td>
+    </tr>
+<% end %>
+</table>

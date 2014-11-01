@@ -1,0 +1,20 @@
+{
+  "name": "grfxsrv",
+  "version": "0.0.0",
+  "authors": [
+    "jlarsson <mimmertim@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.3.0",
+    "dropzone": "~3.10.2",
+    "jquery": "~2.1.1"
+  }
+}

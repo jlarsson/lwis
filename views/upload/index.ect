@@ -1,0 +1,18 @@
+<% extend 'layout.ect' %>
+
+<div id="dz-upload-form">
+</div>
+
+<% block 'scripts': %>
+    <script type="text/javascript">
+        Dropzone.autoDiscover = false;
+        $(function (){
+        
+            // request id for new upload
+            $.getJSON('newbatch', function (batch){
+                $('#dz-upload-form').addClass('dropzone').attr('action', batch.url);
+                Dropzone.discover();
+            });
+        });
+    </script>
+<% end %>
