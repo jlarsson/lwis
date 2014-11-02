@@ -94,6 +94,10 @@
                 debug('onFileAdded');
                 cb(null);
             })(0, function (err) {
+            if (err) {
+                debug('%j', err);
+                debug('%j', err.stack);
+            }
             debug('done');
             cleanup();
             callback();

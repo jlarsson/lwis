@@ -1,18 +1,37 @@
 <% extend 'layout.ect' %>
 
-<div id="dz-upload-form">
+<div class="progress">
+  <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+  </div>
+</div>
+
+<div id="dzUploadForm">
 </div>
 
 <% block 'scripts': %>
     <script type="text/javascript">
         Dropzone.autoDiscover = false;
+        Dropzone.options.dzUploadForm = {
+            init: function (){
+                this.on('totaluploadprogress', function (percent){
+                    var p = ''+ percent;
+                    $('.progress-bar').css('width', p+'%').attr('aria-valuenow', p);
+                });
+                this.on('error', function (){
+                    $('.progress-bar').addClass('progress-bar-danger');
+                });
+            }
+        };
         $(function (){
-        
             // request id for new upload
             $.getJSON('newbatch', function (batch){
-                $('#dz-upload-form').addClass('dropzone').attr('action', batch.url);
+                $('#dzUploadForm').addClass('dropzone').attr('action', batch.url);
                 Dropzone.discover();
             });
+            
+            // $('.progress-bar').css('width', valeur+'%').attr('aria-valuenow', valeur);
+            
+            // .on('totaluploadprogress', function (percent)[})
         });
     </script>
 <% end %>
