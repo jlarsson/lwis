@@ -1,7 +1,7 @@
 # Tempz, build sources and runtime
 tmp
 dist
-appdata
+.data
 
 # Logs
 logs

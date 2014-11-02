@@ -5,6 +5,7 @@
 <table class="table table-bordered table-condensed">
     <tr>
         <th>Name</th>
+        <th>Dimensions</th>
         <th>Size</th>
         <th>Mime type</th>
         <th>Created</th>
@@ -13,6 +14,10 @@
 <% for file in @files : %>
     <tr>
         <td><a href="download/<%- file.id %>"><%- file.file.name %></a></td>
+        <td>
+            <% if file.image : %>
+                <%- file.image.width %>x<%- file.image.height %>
+            <% end %>
         <td><%- file.file.size %></td>
         <td><%- file.mimetype %></td>
         <td><%- file.created %></td>

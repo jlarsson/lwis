@@ -1,6 +1,6 @@
 (function (module) {
     'use strict';
-    
+
     var express = require('express');
     var Router = express.Router;
     var async = require('async');
@@ -45,7 +45,7 @@
             fs.unlink(tempPath, function () {});
         }
         async.seq(
-            function ensureTempFolder(x,cb){
+            function ensureTempFolder(x, cb) {
                 var folder = path.dirname(tempPath);
                 mkdirp(folder, cb);
             },
@@ -63,6 +63,13 @@
                 debug('onGetStats');
                 fileData.file.size = stats.size;
                 cb(null);
+            },
+            function extractMetadata(cb) {
+                app.get('metadata-extractor')({
+                        path: tempPath,
+                        metadata: fileData
+                    },
+                    cb);
             },
             function addBlob(cb) {
                 debug('addBlob');
@@ -86,7 +93,7 @@
             function onFilAddedToRepo(cb) {
                 debug('onFileAdded');
                 cb(null);
-            })(0,function (err) {
+            })(0, function (err) {
             debug('done');
             cleanup();
             callback();

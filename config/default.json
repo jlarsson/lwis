@@ -1,8 +1,8 @@
 {
     "lwis": {
         "folders": {
-            "temp": "./temp",
-            "appdata": "./appdata"
+            "temp": "./.data/.temp",
+            "appdata": "./.data"
         },
         "modules": {
             // blostore - required
@@ -11,6 +11,13 @@
             // repository - required
             // component for storing metadata about blobs
             "./modules/repository": {},
+            
+            // metadata extraction
+            "./modules/metadata-extractor": {
+                "extractors": {
+                    "./modules/metadata/lwip-extractor": {}
+                }
+            },
             
             
             "./routes/main/index": {

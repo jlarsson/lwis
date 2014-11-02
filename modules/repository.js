@@ -25,7 +25,7 @@
         .toClass();
 
     module.exports = function (app, options) {
-        var folder = path.resolve(app.get('appdata'), 'repo/.journal');
+        var folder = path.resolve(app.get('appdata'), '.repo/.journal');
         debug('using repository in %s', folder);
         
         var repository = highlander.repository({
