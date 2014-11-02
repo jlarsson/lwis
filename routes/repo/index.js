@@ -24,6 +24,11 @@
                 });
         });
 
+        router.get('/thumbnail/:id', function (req, res, next) {
+            app.get('asset-transformer')
+                .sendTransform('admin-download', req,res, next);
+        });
+        
         router.get('/download/:id', function (req, res, next) {
             var id = req.params.id;
             debug('download:%s', id);

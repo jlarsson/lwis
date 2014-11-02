@@ -11,7 +11,7 @@
             // repository - required
             // component for storing metadata about blobs
             "./modules/repository": {},
-            
+
             // metadata extraction
             "./modules/metadata-extractor": {
                 "extractors": {
@@ -19,8 +19,19 @@
                     "./modules/metadata/gm-extractor": {}
                 }
             },
-            
-            
+
+            // tranformations
+            "./modules/transform": {
+                "admin-download": {
+                    "match": [
+                        {
+                            "id": {
+                                "param": "id"
+                            }
+                        }
+                    ]
+                }
+            },
             "./routes/main/index": {
                 "base": "/"
             },
@@ -31,5 +42,6 @@
                 "base": "/admin/upload"
             }
         }
+
     }
 }
