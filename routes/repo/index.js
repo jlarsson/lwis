@@ -1,10 +1,12 @@
 (function (module) {
     'use strict';
     
+    var express = require('express');
+    var Router = express.Router;
     var debug = require('debug')('lwis:repository');
     
-    module.exports = function (cfg) {
-        var router = cfg.createRouter();
+    module.exports = function (app, options) {
+        var router = Router();
         router.get('/', function (req, res) {
             return res.redirect('./index');
 
@@ -57,6 +59,6 @@
                 onGetFile);
         });
 
-        cfg.use(router);
+        app.use(options.base, router);
     };
 })(module);

@@ -1,0 +1,27 @@
+{
+    "lwis": {
+        "folders": {
+            "temp": "./temp",
+            "appdata": "./appdata"
+        },
+        "modules": {
+            // blostore - required
+            // component for storing blobs (i.e uploaded files and derived subassets)
+            "./modules/blobstore": {},
+            // repository - required
+            // component for storing metadata about blobs
+            "./modules/repository": {},
+            
+            
+            "./routes/main/index": {
+                "base": "/"
+            },
+            "./routes/repo/index": {
+                "base": "/admin/repository"
+            },
+            "./routes/upload/index": {
+                "base": "/admin/upload"
+            }
+        }
+    }
+}

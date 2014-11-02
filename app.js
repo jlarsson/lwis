@@ -6,18 +6,23 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var busboy = require('connect-busboy');
-var appConfigurator = require('./appconfigurator');
+var lwis = require('./modules/lwis');
+
 
 var app = express();
 
 // data folders path setup
-app.set('appdata_path', path.resolve(__dirname,'appdata'));
-app.set('tmp_path', path.resolve(__dirname,'tmp'));
+app.set('appdata_path', path.resolve(__dirname, 'appdata'));
+app.set('tmp_path', path.resolve(__dirname, 'tmp'));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 
-var ectRenderer = ect({ watch: true, root: __dirname + '/views', ext : '.ect' });
+var ectRenderer = ect({
+    watch: true,
+    root: __dirname + '/views',
+    ext: '.ect'
+});
 app.set('view engine', 'ect');
 app.engine('ect', ectRenderer.render);
 
@@ -25,20 +30,20 @@ app.engine('ect', ectRenderer.render);
 //app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({
+    extended: false
+}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'dist')));
 
+// install busboy globally for stellar multipart handling
 app.use(busboy());
 
-require('./model/blobstore')(appConfigurator(app,'/'));
-require('./model/repository')(appConfigurator(app,'/'));
-require('./routes/main')(appConfigurator(app,'/'));
-require('./routes/repo')(appConfigurator(app,'/repository'));
-require('./routes/upload')(appConfigurator(app,'/upload'));
+// Configure lwis
+lwis(app).configure();
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
     var err = new Error('Not Found');
     err.status = 404;
     next(err);
@@ -49,7 +54,7 @@ app.use(function(req, res, next) {
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
-    app.use(function(err, req, res, next) {
+    app.use(function (err, req, res, next) {
         res.status(err.status || 500);
         res.render('error', {
             message: err.message,
@@ -60,7 +65,7 @@ if (app.get('env') === 'development') {
 
 // production error handler
 // no stacktraces leaked to user
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
     res.status(err.status || 500);
     res.render('error', {
         message: err.message,

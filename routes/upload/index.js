@@ -1,6 +1,8 @@
 (function (module) {
     'use strict';
     
+    var express = require('express');
+    var Router = express.Router;
     var async = require('async');
     var fs = require('fs');
     var path = require('path');
@@ -9,10 +11,10 @@
     var debug = require('debug')('lwis:upload');
     var blobstore = require('blobstore');
 
-    function addFileToBatch(cfg, data, callback) {
+    function addFileToBatch(app, data, callback) {
 
         // Create temporary file and pipe posted file to it
-        var tempPath = path.resolve(cfg.get('tmp_path'), uuid.v4());
+        var tempPath = path.resolve(app.get('temp'), uuid.v4());
         var tempStream = fs.createWriteStream(tempPath);
 
         var fileData = {
@@ -65,7 +67,7 @@
             function addBlob(cb) {
                 debug('addBlob');
                 var blob = blobstore.createBlob(tempPath);
-                cfg.get('blobstore').addBlob(blob, cb);
+                app.get('blobstore').addBlob(blob, cb);
             },
             function onBlobAdded(blob, cb) {
                 debug('onBlobAdded');
@@ -79,7 +81,7 @@
             },
             function addFileToRepo(cb) {
                 debug('addFileToRepo');
-                cfg.get('repo').execute('addFile', fileData, mkcb1(cb));
+                app.get('repo').execute('add-file', fileData, mkcb1(cb));
             },
             function onFilAddedToRepo(cb) {
                 debug('onFileAdded');
@@ -92,9 +94,9 @@
     }
 
 
-    module.exports = function (cfg) {
+    module.exports = function (app, options) {
 
-        var router = cfg.createRouter();
+        var router = Router();
         router.get('/index', function (req, res) {
             res.render('upload/index', {
                 title: 'Upload files'
@@ -122,7 +124,7 @@
                     return;
                 }
                 hasFile = true;
-                addFileToBatch(cfg, {
+                addFileToBatch(app, {
                     batchid: req.params.batchid,
                     file: file,
                     filename: filename,
@@ -139,6 +141,6 @@
             req.pipe(req.busboy);
         });
 
-        cfg.use(router);
+        app.use(options.base, router);
     };
 })(module);

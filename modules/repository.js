@@ -1,10 +1,10 @@
 (function (module) {
     'use strict';
-    
+
     var highlander = require('highlander');
     var ryoc = require('ryoc');
     var path = require('path');
-
+    var debug = require('debug')('lwis:repository');
 
     var Model = ryoc()
         .construct(function () {
@@ -24,18 +24,22 @@
         })
         .toClass();
 
-    module.exports = function (cfg) {
+    module.exports = function (app, options) {
+        var folder = path.resolve(app.get('appdata'), 'repo/.journal');
+        debug('using repository in %s', folder);
+        
         var repository = highlander.repository({
             model: new Model(),
             journal: highlander.fileJournal({
-                path: path.resolve(cfg.get('appdata_path'), 'repo/.journal')
+                path: folder
             })
         });
 
-        repository.registerCommand('addFile', function (ctx, cb) {
+        repository.registerCommand('add-file', function (ctx, cb) {
             return cb(null, ctx.model.addFile(ctx.args));
         });
 
-        cfg.set('repo', repository);
+        app.set('repo', repository);
     };
+
 })(module);
