@@ -15,7 +15,8 @@
             // metadata extraction
             "./modules/metadata-extractor": {
                 "extractors": {
-                    "./modules/metadata/lwip-extractor": {}
+                    //"./modules/metadata/lwip-extractor": {}
+                    "./modules/metadata/gm-extractor": {}
                 }
             },
             
