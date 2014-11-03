@@ -18,9 +18,22 @@
                 debug('constructing route handler for %s', transform);
                 var parsed = parser.parse(transform);
 
+                var cache = {};
+
                 return function (req, res, next) {
-                    //debug('trying to handle route with %s', transform);
-                    //return next();
+
+                    // TODO: Clear out this cache whenever anything is changed in the repository
+                    
+                    // Check if there is a blob in the cache
+                    var cachedInfo = cache[req.originalUrl];
+                    if (cachedInfo) {
+                        if (req.accepts(cachedInfo.mimetype)) {
+                            debug('found cached blob, bypassing logic');
+                            res.contentType(cachedInfo.mimetype);
+                            return cachedInfo.blob.send(req, res);
+                        }
+                        return next();
+                    }
 
                     app.get('repo').query(function (model, cb) {
                             debug('trying to handle route with %s', transform);
@@ -40,19 +53,13 @@
                             if (files.length === 0) {
                                 return next();
                             }
-                            var file = files[0];
+                            var file = files[files.length-1];
 
                             if (!req.accepts(file.mimetype)) {
                                 return next();
                             }
 
-                            debug('TRANFORM: %s',
-                                _(parsed.transform).map(function (t) {
-                                    return t.describe();
-                                }).value().join('&'));
-                            //debug('matching files: %j', files);
-
-                            return download(file, parsed.transform, req, res, next);
+                            return download(cache, file, parsed.transform, req, res, next);
                             next();
                         });
 
@@ -60,7 +67,7 @@
             }
         });
 
-        function download(file, transforms, req, res, next) {
+        function download(cache, file, transforms, req, res, next) {
             // Transformation signature
             var transformSignature = _(transforms).map(function (t) {
                 return t.describe();
@@ -73,7 +80,7 @@
 
             var isDone = false;
             var sourceBlob;
-            var derivedTempPath = path.resolve(app.get('temp'), uuid.v4()) + '.jpg';
+            var derivedTempPath = path.resolve(app.get('temp'), uuid.v4());
 
             var actions = transforms.length === 0 ? [trySendDerivedBlob] : [tryLoadSourceBlob,
                 trySendDerivedBlob,
@@ -100,6 +107,10 @@
                     }
                     res.contentType(file.mimetype);
                     blob.send(req, res);
+                    cache[req.originalUrl] = {
+                        mimetype: file.mimetype,
+                        blob: blob
+                    };
                     isDone = true;
                     cb();
                 });

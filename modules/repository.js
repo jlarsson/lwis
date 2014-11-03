@@ -14,7 +14,15 @@
             this.transforms = {
                 "admin-thumbnail": {
                     route: "/admin/tn/:id",
-                    transform: "when {id} == :id then resize(64,64)"
+                    transform: "when toLower({id}) == toLower(:id) then resize(64,64)"
+                },
+                "product-image": {
+                    route: "/product/:id",
+                    transform: "when len(:id) > 3 && contains({file.name},:id) then resize(800,800)"
+                },
+                "product-small-image": {
+                    route: "/psmall/:id",
+                    transform: "when len(:id) > 3 && contains({file.name},:id) then resize(128,128)"
                 }
             };
         })

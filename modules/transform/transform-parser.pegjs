@@ -1,6 +1,10 @@
 {
     var expressions = require('./expressions');
     var transforms = require('./transforms');
+	function ident(v){
+        return expressions.IdentifierExpression(v.join(''));
+	}
+    
 	function integer(v){
         return expressions.LiteralExpression(parseInt(v.join(''), 10));
 	}
@@ -19,11 +23,17 @@
 	function binary(op, lhs, rhs){
         return expressions.BinaryOperatorExpression(op, lhs, rhs);
 	}
+	function call(name, args){
+        return expressions.CallExpression(name, args);
+	}
 }
 
 Start 
     = __ when:WhenExpression __ "then" __ transform:Transform __ { return { filter: when, transform: transform }; }
     / __ when:WhenExpression __ { return { filter: when }; }
+
+Identifier "identifier"
+    = chars:[a-zA-Z0-9\.\[\]]* { return ident(chars); }
 
 Integer "integer"
 	= digits:[0-9]+ { return integer(digits); }
@@ -50,9 +60,15 @@ PrimaryExpression
 	/ Param
 	/ "(" __ expression:Expression __ ")" { return expression; }
 
+CallExpression
+    = identifier:Identifier __ "(" __ args:ArgList __ ")" { return call(identifier, args); }
+    / PrimaryExpression
+    
+ArgList = l:(first:Expression rest:(__ "," __ e:Expression { return e; })* { return [first].concat(rest); })? { return l || []; }
+
 UnaryExpression
 	= operator:UnaryOperator expression:PrimaryExpression { return unary(operator,expression); }
-	/ PrimaryExpression
+	/ CallExpression
 	
 UnaryOperator
 	= $("+" !"=")
