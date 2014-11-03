@@ -13,8 +13,8 @@
             
             this.transforms = {
                 "admin-thumbnail": {
-                    route: "/tn/:assetid",
-                    transform: "when {id} == :assetid then resize(128,128)"
+                    route: "/admin/tn/:id",
+                    transform: "when {id} == :id then resize(64,64)"
                 }
             };
         })

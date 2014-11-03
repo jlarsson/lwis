@@ -4,6 +4,7 @@
 
 <table class="table table-bordered table-condensed">
     <tr>
+        <th></th>
         <th>Name</th>
         <th>Dimensions</th>
         <th>Size</th>
@@ -13,6 +14,11 @@
     </tr>
 <% for file in @files : %>
     <tr>
+        <td>
+            <% if file.image : %>
+                <img src="/admin/tn/<%- file.id %>" alt="<%- file.file.name %>"/>
+            <% end %>
+        </td>
         <td><a href="download/<%- file.id %>"><%- file.file.name %></a></td>
         <td>
             <% if file.image : %>

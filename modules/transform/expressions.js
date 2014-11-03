@@ -2,7 +2,7 @@
     'use strict';
 
     var ryoc = require('ryoc');
-    var Bro = require('brototype');
+    var Bro = require('brototype').Bro;
 
     var BinaryOperations = {
         '*': function (l, r, c) {
@@ -86,6 +86,7 @@
 
     var Expression = ryoc()
         .abstract('evaluate', function (context) {})
+        .abstract('describe', function (context) {})
         .toClass();
 
     var LiteralExpression = ryoc()
@@ -96,6 +97,7 @@
         .method('evaluate', function (context) {
             return this.value;
         })
+        .method('describe', function () { return this.value; })
         .toClass();
 
     var FieldExpression = ryoc()
@@ -104,18 +106,20 @@
             this.field = field;
         })
         .method('evaluate', function (context) {
-            return Bro(context.currentFile).iCanHaz(this.value);
+            return Bro(context.current).iCanHaz(this.field);
         })
+        .method('describe', function () { return '{' + this.field + '}'; })
         .toClass();
 
     var ParamExpression = ryoc()
         .inherit(Expression)
-        .construct(function (name) {
-            this.param = name;
+        .construct(function (param) {
+            this.param = param;
         })
         .method('evaluate', function (context) {
-            return this.req.params[this.name];
+            return context.req.params[this.param];
         })
+        .method('describe', function () { return ':' + this.param; })
         .toClass();
 
 
@@ -130,6 +134,7 @@
         .method('evaluate', function (context) {
             return this.operation(this.lhs, this.rhs, context);
         })
+        .method('describe', function () { return ['(', this.lhs.describe(), this.operator, this.rhs.describe(), ')'].join(''); })
         .toClass();
 
     var UnaryOperatorExpression = ryoc()
@@ -142,6 +147,7 @@
         .method('evaluate', function (context) {
             return this.operation(this.expression, context);
         })
+        .method('describe', function () { return ['(', this.operator, this.value, ')'].join(''); })
         .toClass();
 
     module.exports = {

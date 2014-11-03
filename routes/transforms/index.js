@@ -9,6 +9,8 @@
 
 
     module.exports = function (app, options) {
+        var router = Router();
+        app.use('/', router);
         app.get('repo').query(function (model, cb) {
                 return cb(null, model.transforms);
             },
@@ -17,13 +19,11 @@
                     return;
                 }
 
-                var router = Router();
                 _(transforms).each(function (transform) {
                     debug('applying transform %j', transform);
                     router.get(transform.route, app.get('transform').createHandler(transform.transform));
                 });
 
-                app.use('/', router);
             });
     };
 })(module);

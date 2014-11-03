@@ -8,11 +8,10 @@
         return expressions.LiteralExpression(parseInt(v.join('')));
 	}
 	function field(v){
-        return expressions.FieldExpression(parseInt(v.join('')));
+        return expressions.FieldExpression(v.join(''));
 	}
 	function param(v){
-        return expressions.ParamExpression(parseInt(v.join('')));
-		return {t:'param',v: v.join('')};
+        return expressions.ParamExpression(v.join(''));
 	}
 	function unary(op, expr){
         return expressions.UnaryOperatorExpression(op, expr);
