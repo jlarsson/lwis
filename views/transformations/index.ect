@@ -1,0 +1,23 @@
+<% extend 'layout.ect' %>
+
+<h1>Transformations</h1>
+
+<% for t in @transformations : %>
+    <div class="panel panel-default">
+        <div class="panel-heading"><%- t.name %></div>
+        <div class="panel-body">
+            <%- t.description %>
+            <div class="form-group">
+                <label>Route</label>
+                <div class="form-control"><%- t.route %></div>
+            </div>
+            <div class="form-group">
+                <label>Transform</label>
+                <pre class="form-control"><%- t.transform %></pre>
+            </div>
+        </div>
+        <div class="panel-footer">
+            <a type="button" class="btn btn-default" href="edit/<%- t.id %>">Edit</a>
+        </div>
+    </div>
+<% end %>

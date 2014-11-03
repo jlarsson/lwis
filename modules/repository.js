@@ -12,18 +12,21 @@
             this.filesById = {};
             
             this.transforms = {
-                "admin-thumbnail": {
-                    route: "/admin/tn/:id",
-                    transform: "when toLower({id}) == toLower(:id) then resize(64,64)"
+                '58a13e35-580b-4978-9efc-02dbcc2cf46f': {
+                    id: '58a13e35-580b-4978-9efc-02dbcc2cf46f',
+                    name: 'lwis default Thumbnails',
+                    description: 'Thumbnail for the administrative pages',
+                    route: '/admin/tn/:id',
+                    transform: 'when toLower({id}) == toLower(:id) then resize(64,64)'
+                }/*,
+                'product-image': {
+                    route: '/product/:id',
+                    transform: 'when len(:id) > 3 && contains({file.name},:id) then resize(800,800)'
                 },
-                "product-image": {
-                    route: "/product/:id",
-                    transform: "when len(:id) > 3 && contains({file.name},:id) then resize(800,800)"
-                },
-                "product-small-image": {
-                    route: "/psmall/:id",
-                    transform: "when len(:id) > 3 && contains({file.name},:id) then resize(128,128)"
-                }
+                'product-small-image': {
+                    route: '/psmall/:id',
+                    transform: 'when len(:id) > 3 && contains({file.name},:id) then resize(128,128)'
+                }*/
             };
         })
         .method('getFileById', function (id) {

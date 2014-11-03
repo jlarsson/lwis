@@ -34,7 +34,7 @@
             },
             
             
-            "./routes/transforms": {}
+            "./routes/transformations": {}
         }
 
     }

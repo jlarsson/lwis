@@ -15,6 +15,7 @@
     "ect": "~0.5.9",
     "uuid": "~2.0.1",
     "connect-busboy": "0.0.2",
+    "highlander": "0.0.6",
     "blobstore": "git://github.com/jlarsson/node-blobstore",
     "ryoc": "0.0.3",
     "lodash": "~2.4.1",
@@ -31,7 +32,6 @@
     "grunt-contrib-concat": "~0.5.0",
     "grunt-contrib-copy": "~0.7.0",
     "grunt-contrib-uglify": "~0.6.0",
-    "grunt-contrib-cssmin": "~0.10.0",
-    "highlander": "0.0.5"
+    "grunt-contrib-cssmin": "~0.10.0"
   }
 }
