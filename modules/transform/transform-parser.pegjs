@@ -1,5 +1,6 @@
 {
     var expressions = require('./expressions');
+    var transforms = require('./transforms');
 	function integer(v){
         return expressions.LiteralExpression(parseInt(v.join(''), 10));
 	}
@@ -21,7 +22,9 @@
 	}
 }
 
-Start = __ when:WhenExpression __ { return {when: when}; }
+Start 
+    = __ when:WhenExpression __ "then" __ transform:Transform __ { return { filter: when, transform: transform }; }
+    / __ when:WhenExpression __ { return { filter: when }; }
 
 Integer "integer"
 	= digits:[0-9]+ { return integer(digits); }
@@ -138,3 +141,16 @@ LogicalORExpression
 
 LogicalOROperator
   = "||"	
+  
+  
+  
+  
+
+PrimaryTransform
+    = "autoOrient" __ "(" __ ")" { return transforms.Transform('autoOrient',[]); }
+    / "resize" __ "(" __ width:Expression __ "," __ height: Expression ")" { return transforms.Transform('resize',[width,height]); }
+    / "crop" __ "(" __ width:Expression __ "," __ height: Expression"," __ x: Expression"," __ y: Expression ")" { return transforms.Transform('resize',[width,height,x,y]); }
+    
+Transform 
+    = head:PrimaryTransform __ "and" __ tail:Transform { return [head].concat(tail); }
+    / transform:PrimaryTransform { return [transform]; }

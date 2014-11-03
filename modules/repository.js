@@ -10,6 +10,13 @@
         .construct(function () {
             this.files = [];
             this.filesById = {};
+            
+            this.transforms = {
+                "admin-thumbnail": {
+                    route: "/tn/:assetid",
+                    transform: "when {id} == :assetid then resize(128,128)"
+                }
+            };
         })
         .method('getFileById', function (id) {
             return this.filesById[id] || null;

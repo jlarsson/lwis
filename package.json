@@ -24,7 +24,8 @@
     "config": "~1.7.0",
     "mime": "~1.2.11",
     "gm": "~1.17.0",
-    "pegjs": "~0.8.0"
+    "pegjs": "~0.8.0",
+    "brototype": "0.0.2"
   },
   "devDependencies": {
     "grunt": "~0.4.5",

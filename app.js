@@ -34,13 +34,14 @@ app.use(bodyParser.urlencoded({
     extended: false
 }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'dist')));
 
 // install busboy globally for stellar multipart handling
 app.use(busboy());
 
 // Configure lwis
 lwis(app).configure();
+
+app.use(express.static(path.join(__dirname, 'dist')));
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

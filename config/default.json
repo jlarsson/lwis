@@ -19,19 +19,10 @@
                     "./modules/metadata/gm-extractor": {}
                 }
             },
-
-            // tranformations
-            "./modules/transform": {
-                "admin-download": {
-                    "match": [
-                        {
-                            "id": {
-                                "param": "id"
-                            }
-                        }
-                    ]
-                }
-            },
+            
+            // transformations
+            "./modules/transform": {},
+            
             "./routes/main/index": {
                 "base": "/"
             },
@@ -40,7 +31,10 @@
             },
             "./routes/upload/index": {
                 "base": "/admin/upload"
-            }
+            },
+            
+            
+            "./routes/transforms": {}
         }
 
     }

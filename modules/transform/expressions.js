@@ -2,6 +2,7 @@
     'use strict';
 
     var ryoc = require('ryoc');
+    var Bro = require('brototype');
 
     var BinaryOperations = {
         '*': function (l, r, c) {
@@ -103,7 +104,7 @@
             this.field = field;
         })
         .method('evaluate', function (context) {
-            return this.value;
+            return Bro(context.currentFile).iCanHaz(this.value);
         })
         .toClass();
 
