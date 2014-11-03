@@ -47,6 +47,13 @@ module.exports = function (grunt) {
                 src: 'tmp/scripts.min.js',
                 dest: 'dist/scripts.min.js'
             },*/
+            images: {
+                expand: true,
+                filter: 'isFile',
+                cwd: 'public/images/',
+                src: '*',
+                dest: 'dist/images/'
+            },
             bootstrapfonts: {
                 expand: true,
                 filter: 'isFile',
@@ -76,6 +83,7 @@ module.exports = function (grunt) {
                     'uglify:js',
                     //'copy:css',
                     //'copy:js',
+                    'copy:images',
                     'copy:bootstrapfonts',
                     'copy:dropzoneimages']);
     /*    

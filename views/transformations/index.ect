@@ -1,7 +1,18 @@
 <% extend 'layout.ect' %>
 
 <h1>Transformations</h1>
-
+<div class="well help-block">
+    <p>
+        Transformations are the working class heroes behind single source imaging.
+    </p>
+    <p>
+        <ul>
+            <li>No image should leave the building unless with a stylish url</li>
+            <li>Images should be resized, cropped and stripped of all EXIF and thumbnail junk before facing your audience</li>
+        </ul>
+    </p>
+    <a href="new" class="btn bt-lg btn-success">Create a new one, a real good one</a>
+</div>
 <% for t in @transformations : %>
     <div class="panel panel-default">
         <div class="panel-heading"><%- t.name %></div>

@@ -6,6 +6,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var busboy = require('connect-busboy');
+var expressValidator = require('express-validator');
 var lwis = require('./modules/lwis');
 
 
@@ -33,6 +34,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: false
 }));
+app.use(expressValidator());
 app.use(cookieParser());
 
 // install busboy globally for stellar multipart handling

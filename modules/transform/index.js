@@ -12,18 +12,28 @@
     var createBlob = require('blobstore').createBlob;
 
     module.exports = function (app, options) {
+
+        var cache = {};
+
+        // Trigger changes in the repo
+        // Out action is to toss away all existing dynamic routes
+        // TODO: Improvements?
+        app.get('repo').on('executed', function onRepositoryChanged(data) {
+            if (data.command.indexOf('transform') >= 0) {
+                debug('clearing fast cache');
+                cache = {};
+            }
+        });
+
         app.set('transform', {
             createHandler: function (transform) {
 
                 debug('constructing route handler for %s', transform);
                 var parsed = parser.parse(transform);
 
-                var cache = {};
-
                 return function (req, res, next) {
-
                     // TODO: Clear out this cache whenever anything is changed in the repository
-                    
+
                     // Check if there is a blob in the cache
                     var cachedInfo = cache[req.originalUrl];
                     if (cachedInfo) {
@@ -53,27 +63,27 @@
                             if (files.length === 0) {
                                 return next();
                             }
-                            var file = files[files.length-1];
+                            var file = files[files.length - 1];
 
                             if (!req.accepts(file.mimetype)) {
                                 return next();
                             }
 
                             return download(cache, file, parsed.transform, req, res, next);
-                            next();
                         });
-
                 }
             }
         });
 
         function download(cache, file, transforms, req, res, next) {
+            transforms = transforms || [];
             // Transformation signature
             var transformSignature = _(transforms).map(function (t) {
                 return t.describe();
             }).value().join('&');
             // Key of transformed blob
-            var tranformedBlobKey = file.blob.hash + (transforms.length === 0 ? '' : '/' + transformSignature);
+            var transformedBlobKey =
+                transforms.length === 0 ? file.blob.key : file.blob.hash + '/' + transformSignature;
 
             var blobstore = app.get('blobstore');
             var repo = app.get('repo');
@@ -92,7 +102,8 @@
                     fs.unlink(derivedTempPath, function () {});
                 }
                 if (!isDone) {
-                    next();
+                    isDone = true;
+                    next(err);
                 }
             });
 
@@ -100,18 +111,18 @@
                 if (isDone) {
                     return cb();
                 }
-                blobstore.getBlob(tranformedBlobKey, function (err, blob) {
+                blobstore.getBlob(transformedBlobKey, function (err, blob) {
                     if (err) {
                         debug('failed to find existing derived blob: %j', err);
-                        return cb(null); // pass on to next handler
+                        return cb(); // pass on to next handler
                     }
-                    res.contentType(file.mimetype);
-                    blob.send(req, res);
+                    isDone = true;
                     cache[req.originalUrl] = {
                         mimetype: file.mimetype,
                         blob: blob
                     };
-                    isDone = true;
+                    res.contentType(file.mimetype);
+                    blob.send(req, res);
                     cb();
                 });
             }
@@ -156,7 +167,7 @@
                     return cb();
                 }
                 var derivedBlob = createBlob(derivedTempPath, {
-                    key: tranformedBlobKey
+                    key: transformedBlobKey
                 });
                 blobstore.addBlob(derivedBlob, function (err) {
                     if (err) {

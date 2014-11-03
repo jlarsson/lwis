@@ -40,6 +40,10 @@
             this.filesById[data.id] = data;
             return data;
         })
+        .method('updateTransform', function (data) {
+            this.transforms[data.id] = data;
+            return data;
+        })
         .toClass();
 
     module.exports = function (app, options) {
@@ -57,6 +61,10 @@
             return cb(null, ctx.model.addFile(ctx.args));
         });
 
+        repository.registerCommand('update-transform', function (ctx, cb) {
+            return cb(null, ctx.model.updateTransform(ctx.args));
+        });
+        
         app.set('repo', repository);
     };
 
