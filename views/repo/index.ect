@@ -19,7 +19,7 @@
                 <img src="/admin/tn/<%- file.id %>" alt="<%- file.file.name %>"/>
             <% end %>
         </td>
-        <td><a href="download/<%- file.id %>"><%- file.file.name %></a></td>
+        <td><a href="/admin/dl/<%- file.id %>"><%- file.file.name %></a></td>
         <td>
             <% if file.image : %>
                 <%- file.image.width %>x<%- file.image.height %>

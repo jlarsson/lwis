@@ -51,7 +51,6 @@
                                 req: req
                             };
                             return cb(null, _(model.files).filter(function (file) {
-                                debug('testing %j', file);
                                 context.current = file;
                                 return parsed.filter.evaluate(context);
                             }).value());

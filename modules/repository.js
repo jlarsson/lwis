@@ -15,10 +15,18 @@
                 '58a13e35-580b-4978-9efc-02dbcc2cf46f': {
                     id: '58a13e35-580b-4978-9efc-02dbcc2cf46f',
                     name: 'lwis default Thumbnails',
-                    description: 'Thumbnail for the administrative pages',
+                    description: 'Thumbnails for the administrative pages',
                     route: '/admin/tn/:id',
                     transform: 'when toLower({id}) == toLower(:id) then resize(64,64)'
-                }/*,
+                },
+                '6d781f94-a454-4f64-b17d-9200c0116167': {
+                    id: '6d781f94-a454-4f64-b17d-9200c0116167',
+                    name: 'lwis default Downloads',
+                    description: 'Downloads for the administrative pages',
+                    route: '/admin/dl/:id',
+                    transform: 'when toLower({id}) == toLower(:id)'
+                },
+                /*
                 'product-image': {
                     route: '/product/:id',
                     transform: 'when len(:id) > 3 && contains({file.name},:id) then resize(800,800)'
