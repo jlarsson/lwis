@@ -120,7 +120,11 @@
                         mimetype: file.mimetype,
                         blob: blob
                     };
-                    res.contentType(file.mimetype);
+                    var ct = file.mimetype;
+                    if (file.charset){
+                        ct = ct + '; charset=' + file.charset;
+                    }
+                    res.contentType(ct);
                     blob.send(req, res);
                     cb();
                 });
