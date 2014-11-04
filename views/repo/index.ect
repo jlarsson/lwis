@@ -8,9 +8,7 @@
         <th>Name</th>
         <th>Dimensions</th>
         <th>Size</th>
-        <th>Mime type</th>
-        <th>Created</th>
-        <th>Hash</th>
+        <th>Document</th>
     </tr>
 <% for file in @files : %>
     <tr>
@@ -25,9 +23,7 @@
                 <%- file.image.width %>x<%- file.image.height %>
             <% end %>
         <td><%- file.file.size %></td>
-        <td><%- file.mimetype %></td>
-        <td><%- file.created %></td>
-        <td><%- file.blob.hash %></td>
+        <td><pre><%- JSON.stringify(file,null,2) %></pre></td>
     </tr>
 <% end %>
 </table>
