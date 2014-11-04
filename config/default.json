@@ -16,13 +16,14 @@
             "./modules/metadata-extractor": {
                 "extractors": {
                     //"./modules/metadata/lwip-extractor": {}
-                    "./modules/metadata/gm-extractor": {}
+                    "./modules/metadata/gm-extractor": {},
+                    "./modules/metadata/chardet": {}
                 }
             },
-            
+
             // transformations
             "./modules/transform": {},
-            
+
             "./routes/main/index": {
                 "base": "/"
             },
@@ -32,8 +33,8 @@
             "./routes/upload/index": {
                 "base": "/admin/upload"
             },
-            
-            
+
+
             "./routes/transformations": {}
         }
 
