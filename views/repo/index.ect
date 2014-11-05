@@ -1,7 +1,57 @@
 <% extend 'layout.ect' %>
 
+<% block 'head': %>
+<style type="text/css">
+    .asset-panel{
+        padding: 0px;
+        margin: 1px;
+    }
+    .asset-panel-body {
+        padding: 0;
+    }
+    .asset-thumbnail-container {
+        padding: 0;
+        margin: 0;
+        height: 165px;
+    }
+    .asset-thumbnail {
+        padding: 0;
+        margin: auto;
+    }
+    .asset-text {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-align: center;
+    }
+</style>
+<% end %>
+
 <h1>Repository</h1>
 
+<div class="row asset-row">
+<% for file in @files : %>
+    <div class="col-lg-2 col-sm-3 col-xs-4 panel panel-default asset-panel">
+        <div class="panel-heading asset-text"><%-file.file.name%></div>
+        <div class="panel-body asset-panel-body">
+            <div class="asset-thumbnail-container">
+                <a href="/admin/dl/<%-file.id%>">
+                    <img class="thumbnail img-responsive asset-thumbnail" src="<% if file.image : %>/admin/tn/<%- file.id %><% else: %>/images/rabbitandkitten.png<% end%>" alt="<%- file.file.name %>"/></a>
+            </div>
+            <div class="asset-text"><%- @formatSize(file.file.size) %></div>
+            
+            <div class="asset-text">
+                <% if file.image : %>
+                    <%- file.image.width %> x <%- file.image.height %>
+                <% else: %>
+                    &nbsp;
+                <% end %>
+            </div>
+        </div>    
+    </div>
+<% end %>
+</div>
+<!--
 <table class="table table-bordered table-condensed">
     <tr>
         <th></th>
@@ -27,3 +77,4 @@
     </tr>
 <% end %>
 </table>
+-->

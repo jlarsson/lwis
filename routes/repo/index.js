@@ -4,6 +4,7 @@
     var express = require('express');
     var Router = express.Router;
     var debug = require('debug')('lwis:repository');
+    var filesize = require('filesize');
     
     module.exports = function (app, options) {
         var router = Router();
@@ -19,7 +20,8 @@
                 function (err, files) {
                     res.render('repo/index', {
                         title: 'Repository',
-                        files: files
+                        files: files,
+                        formatSize: filesize
                     });
                 });
         });
