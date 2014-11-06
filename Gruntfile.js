@@ -15,8 +15,9 @@ module.exports = function (grunt) {
             js: {
                 src: [
                     'bower_components/jquery/dist/jquery.js',
+                    'bower_components/jquery-form/jquery.form.js',
                     'bower_components/bootstrap/dist/js/bootstrap.js',
-                    'bower_components/dropzone/downloads/dropzone.js',
+                    'bower_components/dropzone/downloads/dropzone.js'
                 ],
                 dest: 'dist/js/scripts.js'
             }

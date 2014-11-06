@@ -1,8 +1,12 @@
 <% extend 'layout.ect' %>
+<% block 'scripts': %>
+<script type="text/javascript">
+    (function($){$(function (){$('#transformation-form').ajaxForm({target:'#transformation-form'});});})(jQuery);
+</script>
+<% end %>
 
-<h1>Edit <%- @transformation.name %></h1>
-
-<form class="form-horizontal" role="form" method="POST" action="<%-@postLink%>">
+<form id="transformation-form" class="form-horizontal" role="form" method="POST" action="<%-@postLink%>">
+    <h1>Edit <%- @transformation.name %></h1>
 
     <div class="form-group<%if @errors.name:%> has-warning<%end%>">
         <label for="name" class="col-sm-2 control-label">Name</label>
