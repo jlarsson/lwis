@@ -6,6 +6,10 @@
         padding: 0px;
         margin: 1px;
     }
+    .asset-outer-panel {
+        padding: 0;
+        margin: 0;
+    }
     .asset-panel-body {
         padding: 0;
     }
@@ -31,7 +35,8 @@
 
 <div class="row asset-row">
 <% for file in @files : %>
-    <div class="col-lg-2 col-sm-3 col-xs-4 panel panel-default asset-panel">
+    <div class="col-lg-2 col-sm-3 col-xs-4 asset-outer-panel">
+        <div class="panel panel-default asset-panel">
         <div class="panel-heading asset-text"><%-file.file.name%></div>
         <div class="panel-body asset-panel-body">
             <div class="asset-thumbnail-container">
@@ -48,33 +53,7 @@
                 <% end %>
             </div>
         </div>    
+        </div>
     </div>
 <% end %>
 </div>
-<!--
-<table class="table table-bordered table-condensed">
-    <tr>
-        <th></th>
-        <th>Name</th>
-        <th>Dimensions</th>
-        <th>Size</th>
-        <th>Document</th>
-    </tr>
-<% for file in @files : %>
-    <tr>
-        <td>
-            <% if file.image : %>
-                <img src="/admin/tn/<%- file.id %>" alt="<%- file.file.name %>"/>
-            <% end %>
-        </td>
-        <td><a href="/admin/dl/<%- file.id %>"><%- file.file.name %></a></td>
-        <td>
-            <% if file.image : %>
-                <%- file.image.width %>x<%- file.image.height %>
-            <% end %>
-        <td><%- file.file.size %></td>
-        <td><pre><%- JSON.stringify(file,null,2) %></pre></td>
-    </tr>
-<% end %>
-</table>
--->
