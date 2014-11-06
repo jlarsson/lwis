@@ -3,13 +3,15 @@
 
     var fs = require('fs');
     var path = require('path');
-    var parser = require('./transform-parser');
+    var ftparser = require('./filter-transform-parser');
+    var routeparser = require('./route-parser');
     var debug = require('debug')('lwis:transform');
     var _ = require('lodash');
     var async = require('async');
     var gm = require('gm');
     var uuid = require('uuid');
     var createBlob = require('blobstore').createBlob;
+    var gmproxy = require('./gm-proxy');
 
     module.exports = function (app, options) {
 
@@ -29,7 +31,22 @@
             createHandler: function (transform) {
 
                 debug('constructing route handler for %s', transform);
-                var parsed = parser.parse(transform);
+
+                var transformparams = routeparser(transform.route);
+
+                var handlerToUseWhenThingsAreBad = function (req, res, next) {
+                    return next();
+                };
+
+                try {
+                    var filterTransform = ftparser(transform.transform, transformparams);
+                    if (!filterTransform.hasFilter) {
+                        return handlerToUseWhenThingsAreBad;
+                    }
+                } catch (e) {
+                    // TODO: 
+                    return handlerToUseWhenThingsAreBad;
+                }
 
                 return function (req, res, next) {
                     // TODO: Clear out this cache whenever anything is changed in the repository
@@ -47,13 +64,7 @@
 
                     app.get('repo').query(function (model, cb) {
                             debug('trying to handle route with %s', transform);
-                            var context = {
-                                req: req
-                            };
-                            return cb(null, _(model.files).filter(function (file) {
-                                context.current = file;
-                                return parsed.filter.evaluate(context);
-                            }).value());
+                            return cb(null, model.getAllFiles());
                         },
                         function (err, files) {
                             if (err) {
@@ -62,27 +73,43 @@
                             if (files.length === 0) {
                                 return next();
                             }
+                            // Filter the files
+                            var files = filterTransform.filter(files, req.params);
+                            if (files.length === 0) {
+                                return next();
+                            }
+
                             var file = files[files.length - 1];
 
                             if (!req.accepts(file.mimetype)) {
                                 return next();
                             }
 
-                            return download(cache, file, parsed.transform, req, res, next);
+                            // Apply transformations
+                            var transformationHandle = {}
+                            filterTransform.transform(gmproxy(transformationHandle), req.params);
+
+                            return download(cache, file, transformationHandle, req, res, next);
                         });
                 }
             }
         });
 
-        function download(cache, file, transforms, req, res, next) {
-            transforms = transforms || [];
-            // Transformation signature
-            var transformSignature = _(transforms).map(function (t) {
-                return t.describe();
-            }).value().join('&');
-            // Key of transformed blob
-            var transformedBlobKey =
-                transforms.length === 0 ? file.blob.key : file.blob.hash + '/' + transformSignature;
+        function download(cache, file, transformationHandle, req, res, next) {
+            var actions;
+            var transformedBlobKey;
+
+            if (transformationHandle.needApply()) {
+                transformedBlobKey = file.blob.hash + '/' + transformationHandle.getSignature();
+                actions = [tryLoadSourceBlob,
+                trySendDerivedBlob,
+                tryDeriveSourceBlob,
+                trySaveDerivedBlob,
+                trySendDerivedBlob]
+            } else {
+                transformedBlobKey = file.blob.key;
+                actions = [trySendDerivedBlob];
+            }
 
             var blobstore = app.get('blobstore');
             var repo = app.get('repo');
@@ -91,11 +118,6 @@
             var sourceBlob;
             var derivedTempPath = path.resolve(app.get('temp'), uuid.v4());
 
-            var actions = transforms.length === 0 ? [trySendDerivedBlob] : [tryLoadSourceBlob,
-                trySendDerivedBlob,
-                tryDeriveSourceBlob,
-                trySaveDerivedBlob,
-                trySendDerivedBlob];
             async.series(actions, function (err) {
                 if (derivedTempPath) {
                     fs.unlink(derivedTempPath, function () {});
@@ -121,7 +143,7 @@
                         blob: blob
                     };
                     var ct = file.mimetype;
-                    if (file.charset){
+                    if (file.charset) {
                         ct = ct + '; charset=' + file.charset;
                     }
                     res.contentType(ct);
@@ -148,16 +170,9 @@
                 if (isDone) {
                     return cb();
                 }
-                var context = {
-                    current: file,
-                    gm: gm(sourceBlob.path)
-                };
-                _(transforms).each(function (transform) {
-                    transform.transform(context);
-                });
+                var gmobj = transformationHandle.apply(gm(sourceBlob.path));
 
-                //context.gm = context.gm.resize(128,128);
-                context.gm.write(derivedTempPath, function (err) {
+                gmobj.write(derivedTempPath, function (err) {
                     if (err) {
                         debug('failed to derive blob with GraphicsMagick: %j', err);
                     }

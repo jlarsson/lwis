@@ -1,6 +1,6 @@
 require('should');
 var assert = require('assert');
-var parser = require('../modules/filter-transform-parser');
+var parser = require('../modules/transform/filter-transform-parser');
 
 describe('ft-parser', function (){
     it('should throw on invalid js syntax', function (){

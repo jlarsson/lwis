@@ -122,7 +122,7 @@
                     _(transforms).each(function (transform) {
                         debug('applying transform %j', transform);
 
-                        var handler = app.get('transform').createHandler(transform.transform);
+                        var handler = app.get('transform').createHandler(transform);
 
                         router.get(transform.route, function (req, res, next) {
                             if (!revision.valid) {

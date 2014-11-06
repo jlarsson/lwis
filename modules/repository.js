@@ -17,24 +17,15 @@
                     name: 'lwis default Thumbnails',
                     description: 'Thumbnails for the administrative pages',
                     route: '/admin/tn/:id',
-                    transform: 'when toLower({id}) == toLower(:id) then resize(64,64)'
+                    transform: 'function filter () { return this.id == id; }\nfunction transform(){ return this.resize(64,64); }'
                 },
                 '6d781f94-a454-4f64-b17d-9200c0116167': {
                     id: '6d781f94-a454-4f64-b17d-9200c0116167',
                     name: 'lwis default Downloads',
                     description: 'Downloads for the administrative pages',
                     route: '/admin/dl/:id',
-                    transform: 'when toLower({id}) == toLower(:id)'
-                },
-                /*
-                'product-image': {
-                    route: '/product/:id',
-                    transform: 'when len(:id) > 3 && contains({file.name},:id) then resize(800,800)'
-                },
-                'product-small-image': {
-                    route: '/psmall/:id',
-                    transform: 'when len(:id) > 3 && contains({file.name},:id) then resize(128,128)'
-                }*/
+                    transform: 'function filter () { return this.id == id; }'
+                }
             };
         })
         .method('getFileById', function (id) {
