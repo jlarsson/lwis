@@ -12,6 +12,7 @@
     var uuid = require('uuid');
     var createBlob = require('blobstore').createBlob;
     var gmproxy = require('./gm-proxy');
+    var validation = require('../validation');
 
     module.exports = function (app, options) {
 
@@ -27,18 +28,38 @@
             }
         });
 
+        app.set('publication-validator', validation()
+            .notEmpty('name', 'Please name this publication')
+            .notEmpty('description', 'Please describe this publication')
+            .notEmpty('route', 'Please give this publication a link')
+            .notEmpty('script', 'Add bacon!')
+            .use('route', function (f, value) {
+                var p = routeparser(value);
+                return p.valid ? null : p.errorMessage;
+            })
+            .use('script', function (f, value) {
+                var p = scriptparser(value, []);
+                if (p.error) {
+                    return p.error;
+                }
+                if (!p.hasFilter) {
+                    return 'The script must atleast have a filter() function';
+                }
+                return null;
+            }));
+
         app.set('publication', {
             createHandler: function (publication) {
 
                 debug('constructing publication handler for %s', publication);
 
                 var parsedRoute = routeparser(publication.route);
-                if (!parsedRoute.valid){
+                if (!parsedRoute.valid) {
                     return null;
                 }
-                
-                var parsedScript = scriptparser(publication.script,parsedRoute.params);
-                if (!parsedScript.valid){
+
+                var parsedScript = scriptparser(publication.script, parsedRoute.params);
+                if (!parsedScript.valid) {
                     return null;
                 }
 
@@ -55,7 +76,7 @@
                         }
                         return next();
                     }
-                    
+
                     var script;
 
                     app.get('repo').query(function (model, cb) {
@@ -69,7 +90,7 @@
                             if (files.length === 0) {
                                 return next();
                             }
-                        
+
                             script = parsedScript.createScript(req.params);
                             // Filter the files
                             var files = script.filter(files);
@@ -86,7 +107,7 @@
                             // Apply transformations
                             var transformationHandle = {};
                             var factory = gmproxy(transformationHandle);
-                            script.transform(file,[factory]);
+                            script.transform(file, [factory]);
 
                             return download(cache, file, transformationHandle, req, res, next);
                         });
