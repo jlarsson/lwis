@@ -24,7 +24,7 @@
                     name: 'lwis default Downloads',
                     description: 'Downloads for the administrative pages',
                     route: '/admin/dl/:id',
-                    script: 'function filter () {\n  return this.id === id;\n}\nfunction transform(f)\n{\n return f.resize(165,165).noProfile();\n}'
+                    script: 'function filter () {\n  return this.id === id;\n}\nfunction transform(f)\n{\n return f.noProfile();\n}'
                 }
             };
         })
