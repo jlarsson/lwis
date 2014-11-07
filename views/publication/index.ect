@@ -1,9 +1,9 @@
 <% extend 'layout.ect' %>
 
-<h1>Transformations</h1>
+<h1>Publications</h1>
 <div class="well help-block">
     <p>
-        Transformations are the working class heroes behind single source imaging.
+        Publications are the working class heroes behind single source imaging.
     </p>
     <p>
         <ul>
@@ -13,22 +13,22 @@
     </p>
     <a href="new" class="btn bt-lg btn-success">Create a new one, a real good one</a>
 </div>
-<% for t in @transformations : %>
+<% for publication in @publications : %>
     <div class="panel panel-default panel-success">
-        <div class="panel-heading"><h3><%- t.name %></3></div>
+        <div class="panel-heading"><h3><%- publication.name %></3></div>
         <div class="panel-body">
-            <%- t.description %>
+            <%- publication.description %>
             <div class="form-group">
                 <label>Route</label>
-                <div class="form-control"><%- t.route %></div>
+                <div class="form-control"><%- publication.route %></div>
             </div>
             <div class="form-group">
-                <label>Transform</label>
-                <pre class="form-control"><%- t.transform %></pre>
+                <label>Script</label>
+                <pre><%- publication.script %></pre>
             </div>
         </div>
         <div class="panel-footer">
-            <a type="button" class="btn btn-default" href="edit/<%- t.id %>">Edit</a>
+            <a type="button" class="btn btn-default" href="edit/<%- publication.id %>">Edit</a>
         </div>
     </div>
 <% end %>

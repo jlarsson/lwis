@@ -44,6 +44,46 @@ describe('scriptparser', function () {
     });
 });
 
+describe('script execution', function (){
+    function ok(scriptCode, parameterNames){
+        var parsing = parser(scriptCode,parameterNames||[]);
+        (parsing.error === null).should.equal(true);
+        return parsing;
+    }
+    
+    it('filter() is applied', function (){
+        var script = ok('function filter() { return this > 2; }').createScript({});
+        
+        var filtered = script.filter([1,2,3,4]);
+        
+        filtered.should.eql([3,4]);
+    });
+
+    it('filter() can use parameters', function (){
+        var script = ok('function filter() { return this == a; }',['a']).createScript({a:3});
+        
+        var filtered = script.filter([1,2,3,4]);
+        
+        filtered.should.eql([3]);
+    });
+    
+    it('transform() is applied', function (){
+        var script = ok('function transform(t) { return t(this); }').createScript({});
+        
+        var self = {name: 'test'};
+        var factory = function (o){o.transformed = true; return o;};
+        var transformed = script.transform(self,[factory]);
+        (self === transformed).should.equal(true);
+        self.transformed.should.equal.true;
+    });
+    
+    it('transform() can use parameters', function (){
+        var script = ok('function transform() { return p1; }',['p1']).createScript({p1:'hello'});
+        script.transform({}).should.equal('hello');
+    });
+    
+});
+
 describe('scriptparser sandboxing', function (){
     it('Cannot affect prototypes', function (){
         parser('Object.prototype.foo = function () {return 1;};');

@@ -10,6 +10,8 @@
 
         var ScriptClass = classBuilder()
             .construct(function (script, options) {
+                var context = {};
+                context[globalName] = {};
                 this.script = script;
                 this.options = options;
                 this.context = context;
@@ -18,6 +20,7 @@
                 if (this.options.hasFilter) {
                     this.context[globalName].command = 'applyFilter';
                     this.context[globalName].list = list;
+                    this.context[globalName].params = this.options.params;
                     return this.script.runInNewContext(this.context);
                 }
             })
@@ -25,7 +28,8 @@
                 if (this.options.hasTransform) {
                     this.context[globalName].command = 'applyTransform';
                     this.context[globalName].self = self;
-                    this.context[globalName].args = args;
+                    this.context[globalName].args = args||[];
+                    this.context[globalName].params = this.options.params;
                     return this.script.runInNewContext(this.context);
                 }
             })
@@ -35,12 +39,15 @@
             .construct(function (script) {
                 this.script = script;
             })
+            .property('valid')
+            .property('error')
             .property('hasFilter')
             .property('hasTransform')
-            .method('createScript', function () {
+            .method('createScript', function (params) {
                 return new ScriptClass(this.script, {
                     hasFilter: this.hasFilter,
-                    hasTransform: this.hasTtransform
+                    hasTransform: this.hasTransform,
+                    params: params || {}
                 });
             })
             .toClass();
@@ -55,8 +62,8 @@
             } })(__lwis__script__args__);';
 
             var scriptCode = scriptTemplate.replace('$params', _.map(params, function (p) {
-                    return 'var ' + p + ' = arguments[0].params["' + p + '"];'
-                }).join(''))
+                return 'var ' + p + ' = arguments[0].params["' + p + '"];'
+            }).join(''))
                 .replace('$code', code);
 
             return vm.createScript(scriptCode);
@@ -85,6 +92,7 @@
         };
 
         var parsing = new ParsingKlass(script);
+        parsing.valid = parsingError === null;
         parsing.error = parsingError;
         parsing.hasFilter = diagnoseScript(script, 'getFilter');
         parsing.hasTransform = diagnoseScript(script, 'getTransform');

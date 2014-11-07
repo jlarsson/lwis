@@ -11,20 +11,20 @@
             this.files = [];
             this.filesById = {};
             
-            this.transforms = {
+            this.publications = {
                 '58a13e35-580b-4978-9efc-02dbcc2cf46f': {
                     id: '58a13e35-580b-4978-9efc-02dbcc2cf46f',
                     name: 'lwis default Thumbnails',
                     description: 'Thumbnails for the administrative pages',
                     route: '/admin/tn/:id',
-                    transform: 'function filter () { return this.id == id; }\nfunction transform(){ return this.resize(64,64); }'
+                    script: 'function filter () { return this.id == id; }\nfunction transform(f){ return f.resize(165,165); }'
                 },
                 '6d781f94-a454-4f64-b17d-9200c0116167': {
                     id: '6d781f94-a454-4f64-b17d-9200c0116167',
                     name: 'lwis default Downloads',
                     description: 'Downloads for the administrative pages',
                     route: '/admin/dl/:id',
-                    transform: 'function filter () { return this.id == id; }'
+                    script: 'function filter () { return this.id == id; }'
                 }
             };
         })
@@ -34,14 +34,20 @@
         .method('getAllFiles', function () {
             return this.files;
         })
-        .method('addFile', function (data) {
-            this.files.push(data);
-            this.filesById[data.id] = data;
+        .method('addFile', function (file) {
+            this.files.push(file);
+            this.filesById[file.id] = file;
             return data;
         })
-        .method('updateTransform', function (data) {
-            this.transforms[data.id] = data;
+        .method('updatePublication', function (publication) {
+            this.publications[publication.id] = publication;
             return data;
+        })
+        .method('getPublication', function (id){
+            return this.publications[id];
+        })
+        .method('getPublications', function (){
+            return this.publications;
         })
         .toClass();
 
@@ -60,8 +66,8 @@
             return cb(null, ctx.model.addFile(ctx.args));
         });
 
-        repository.registerCommand('update-transform', function (ctx, cb) {
-            return cb(null, ctx.model.updateTransform(ctx.args));
+        repository.registerCommand('update-publication', function (ctx, cb) {
+            return cb(null, ctx.model.updatePublication(ctx.args));
         });
         
         app.set('repo', repository);
