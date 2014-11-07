@@ -16,6 +16,7 @@
     "bootstrap": "~3.3.0",
     "dropzone": "~3.10.2",
     "jquery": "~2.1.1",
-    "jquery-form": "~3.46.0"
+    "jquery-form": "~3.46.0",
+    "rainbow": "~1.1.9"
   }
 }

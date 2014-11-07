@@ -37,6 +37,7 @@
     "grunt-contrib-cssmin": "~0.10.0",
     "grunt-contrib-uglify": "~0.6.0",
     "mocha": "^2.0.1",
-    "should": "^4.1.0"
+    "should": "^4.1.0",
+    "load-grunt-tasks": "~1.0.0"
   }
 }

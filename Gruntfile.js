@@ -8,6 +8,7 @@ module.exports = function (grunt) {
                 src: [
                     'bower_components/bootstrap/dist/css/bootstrap.css',
                     'bower_components/dropzone/downloads/css/dropzone.css',
+                    'bower_components/rainbow/themes/blackboard.css',
                     'public/css/styles.css'
                 ],
                 dest: 'dist/css/styles.css'
@@ -17,7 +18,11 @@ module.exports = function (grunt) {
                     'bower_components/jquery/dist/jquery.js',
                     'bower_components/jquery-form/jquery.form.js',
                     'bower_components/bootstrap/dist/js/bootstrap.js',
-                    'bower_components/dropzone/downloads/dropzone.js'
+                    'bower_components/dropzone/downloads/dropzone.js',
+                    'bower_components/rainbow/js/rainbow.js',
+                    'bower_components/rainbow/js/language/generic.js',
+                    'bower_components/rainbow/js/language/javascript.js',
+                    'public/js/init.js'
                 ],
                 dest: 'dist/js/scripts.js'
             }
@@ -40,14 +45,6 @@ module.exports = function (grunt) {
             }
         },
         copy: {
-/*            css: {
-                src: 'tmp/styles.min.css',
-                dest: 'dist/styles.min.js'
-            },
-            js: {
-                src: 'tmp/scripts.min.js',
-                dest: 'dist/scripts.min.js'
-            },*/
             images: {
                 expand: true,
                 filter: 'isFile',
@@ -72,31 +69,13 @@ module.exports = function (grunt) {
         }
     });
 
-    grunt.loadNpmTasks('grunt-contrib-concat');
-    grunt.loadNpmTasks('grunt-contrib-copy');
-    grunt.loadNpmTasks('grunt-contrib-uglify');
-    grunt.loadNpmTasks('grunt-contrib-cssmin');
-
+    require('load-grunt-tasks')(grunt);
     grunt.registerTask('default', [
                     'concat:css',
                     'concat:js',
                     'cssmin:css',
                     'uglify:js',
-                    //'copy:css',
-                    //'copy:js',
                     'copy:images',
                     'copy:bootstrapfonts',
                     'copy:dropzoneimages']);
-    /*    
-    // A very basic default task.
-    grunt.registerTask('
-                    default ', '
-                    Log some stuff.
-                    ', function () {
-        grunt.log.write('
-                    Logging some stuff...
-                    ').ok();
-    });
-    */
-
 };
