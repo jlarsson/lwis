@@ -7,11 +7,8 @@
     var _ = require('lodash');
     var uuid = require('uuid');
 
-
-
     module.exports = function (app, options) {
         var router = Router();
-
 
         router.get('/admin/publication/index', function (req, res) {
             app.get('repo').query(function (model, cb) {
@@ -47,7 +44,7 @@
                     });
                 });
         });
-        router.post('/admin/publicatios/edit/:id', function (req, res, next) {
+        router.post('/admin/publication/edit/:id', function (req, res, next) {
             req.checkBody('name', 'Please give a good solid name').notEmpty();
             req.checkBody('description', 'Describing is understanding. Go ahead...').notEmpty();
             req.checkBody('route', 'Lets give it a proper route!').notEmpty();
@@ -62,7 +59,7 @@
             };
             var errors = req.validationErrors(true);
             if (errors) {
-                return res.render('publication/edit', {
+                return res.render('publication/edit-partial', {
                     title: data.name,
                     publication: data,
                     errors: errors || {}
@@ -75,7 +72,7 @@
                         return next(err);
                     }
 
-                    res.render('publication/edit', {
+                    res.render('publication/edit-partial', {
                         title: publication.name,
                         publication: publication,
                         errors: {}
@@ -93,7 +90,7 @@
         app.get('repo').on('executed', function onRepositoryChanged(data) {
             if (data.command.indexOf('publication') >= 0) {
                 debug('rebuilding publications');
-                applyDynamicPublication();
+                applyDynamicPublications();
             }
         });
 
