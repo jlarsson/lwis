@@ -1,6 +1,5 @@
 <form id="publication-form" class="form-horizontal" role="form" method="POST" action="<%-@postLink%>">
-    <h1>Edit <%- @publication.name %></h1>
-
+    <h3><%- @publication.name %></h3>
     <div class="form-group<%if @errors.name:%> has-warning<%end%>">
         <label for="name" class="col-sm-2 control-label">Name</label>
         <div class="col-sm-10">

@@ -6,7 +6,8 @@ module.exports = function (grunt) {
         concat: {
             css: {
                 src: [
-                    'bower_components/bootstrap/dist/css/bootstrap.css',
+                    //'bower_components/bootstrap/dist/css/bootstrap.css',
+                    'public/css/bootswatch.slate.bootstrap.css',
                     'bower_components/dropzone/downloads/css/dropzone.css',
                     'bower_components/rainbow/themes/blackboard.css',
                     'public/css/styles.css'
