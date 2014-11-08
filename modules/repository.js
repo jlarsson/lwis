@@ -17,14 +17,14 @@
                     name: 'lwis default Thumbnails',
                     description: 'Thumbnails for the administrative pages',
                     route: '/admin/tn/:id',
-                    script: 'function filter () {\n  return this.id === id;\n}\nfunction transform(f){\n  return f.resize(165,165).noProfile();\n}'
+                    script: 'function filter() {\n  return this.id === id;\n}\nfunction transform(f){\n  return f.resize(165,165).noProfile();\n}'
                 },
                 '6d781f94-a454-4f64-b17d-9200c0116167': {
                     id: '6d781f94-a454-4f64-b17d-9200c0116167',
                     name: 'lwis default Downloads',
                     description: 'Downloads for the administrative pages',
                     route: '/admin/dl/:id',
-                    script: 'function filter () {\n  return this.id === id;\n}\nfunction transform(f)\n{\n return f.noProfile();\n}'
+                    script: 'function filter() {\n  return this.id === id;\n}\nfunction transform(f)\n{\n return f.noProfile();\n}'
                 }
             };
         })
