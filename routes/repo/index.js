@@ -15,7 +15,7 @@
         router.get('/index', function (req, res) {
 
             req.app.get('repo').query(function (model, cb) {
-                    cb(null, model.getAllFiles());
+                    cb(null, model.getFiles());
                 },
                 function (err, files) {
                     res.render('repo/index', {
@@ -28,7 +28,7 @@
         router.get('/details/:id', function (req, res) {
 
             req.app.get('repo').query(function (model, cb) {
-                    cb(null, model.getFileById(req.params.id));
+                    cb(null, model.getFile(req.params.id));
                 },
                 function (err, file) {
                     if (err) return next(err);

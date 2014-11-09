@@ -13,6 +13,7 @@
     var createBlob = require('blobstore').createBlob;
     var validation = require('../validation');
     var transformFactory = require('./transform/transform-factory');
+    var fileProxy = require('./transform/file-proxy');
 
     module.exports = function (app, options) {
 
@@ -81,7 +82,7 @@
 
                     app.get('repo').query(function (model, cb) {
                             debug('trying to handle publication with %s', publication);
-                            return cb(null, model.getAllFiles());
+                            return cb(null, model.getFiles());
                         },
                         function (err, files) {
                             if (err) {
@@ -100,12 +101,14 @@
 
                             var file = files[files.length - 1];
 
+                            /*
                             if (!req.accepts(file.mimetype)) {
                                 return next();
                             }
+                            */
 
                             // Apply transformations
-                            var transform = script.transform(file, [transformFactory()]);
+                            var transform = script.transform(fileProxy(file), [transformFactory(req)]);
 
                             // TODO: Check that if transform then is AbstractTransform
 
