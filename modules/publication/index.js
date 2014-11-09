@@ -13,6 +13,7 @@
     var createBlob = require('blobstore').createBlob;
     var gmproxy = require('./gm-proxy');
     var validation = require('../validation');
+    var transformFactory = require('./transform/transform-factory');
 
     module.exports = function (app, options) {
 
@@ -105,22 +106,22 @@
                             }
 
                             // Apply transformations
-                            var transformationHandle = {};
-                            var factory = gmproxy(transformationHandle);
-                            script.transform(file, [factory]);
+                            var transform = script.transform(file, [transformFactory()]);
+                        
+                            // TODO: Check that if transform then is AbstractTransform
 
-                            return download(cache, file, transformationHandle, req, res, next);
+                            return download(cache, file, transform, req, res, next);
                         });
                 }
             }
         });
 
-        function download(cache, file, transformationHandle, req, res, next) {
+        function download(cache, file, transform, req, res, next) {
             var actions;
             var transformedBlobKey;
 
-            if (transformationHandle.needApply()) {
-                transformedBlobKey = file.blob.hash + '/' + transformationHandle.getSignature();
+            if (transform) {
+                transformedBlobKey = file.blob.hash + '/' + transform.__internal_get_signature();
                 actions = [tryLoadSourceBlob,
                 trySendDerivedBlob,
                 tryDeriveSourceBlob,
@@ -190,11 +191,13 @@
                 if (isDone) {
                     return cb();
                 }
-                var gmobj = transformationHandle.apply(gm(sourceBlob.path));
 
-                gmobj.write(derivedTempPath, function (err) {
+                transform.__internal_apply_transform({
+                    sourceBlob: sourceBlob,
+                    destPath: derivedTempPath
+                }, function (err) {
                     if (err) {
-                        debug('failed to derive blob with GraphicsMagick: %j', err);
+                        debug('failed to transform blob: %j', err);
                     }
                     cb(err);
                 });
