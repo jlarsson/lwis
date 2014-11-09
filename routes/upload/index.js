@@ -18,12 +18,9 @@
         var tempStream = fs.createWriteStream(tempPath);
 
         var fileData = {
-            id: uuid.v4(),
+            id: uuid.v4().split('-').join(''),
             mimetype: data.mimetype,
             created: new Date(),
-            batch: {
-                id: data.batchid
-            },
             file: {
                 name: data.filename,
                 size: 0
@@ -31,6 +28,9 @@
             blob: {
                 key: null,
                 hash: null
+            },
+            batch: {
+                id: data.batchid
             }
         };
 
