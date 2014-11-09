@@ -23,7 +23,7 @@ module.exports = function (grunt) {
                     'bower_components/rainbow/js/rainbow.js',
                     'bower_components/rainbow/js/language/generic.js',
                     'bower_components/rainbow/js/language/javascript.js',
-                    'public/js/init.js'
+                    'public/js/page.js'
                 ],
                 dest: 'dist/js/scripts.js'
             }
