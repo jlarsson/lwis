@@ -6,14 +6,12 @@
 
     var Klass = classBuilder()
         .construct(function (file) {
-            _.each(file, function (v,k){
-                this[k] = v;
-            }.bind(this)); 
+            this.data = file;
         })
         .method('is', function (mimetype) {
             var req = {
                 headers: {
-                    'content-type': this.mimetype || '',
+                    'content-type': this.data.mimetype || '',
                     'transfer-encoding': 'chunked'
                 }
             };

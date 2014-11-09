@@ -13,8 +13,9 @@
     var createBlob = require('blobstore').createBlob;
     var validation = require('../validation');
     var transformFactory = require('./transform/transform-factory');
-    var fileProxy = require('./transform/file-proxy');
-
+    //var extendFiles = require('./transform/extend-files');
+    var fileHolder = require('./transform/file-holder');
+    
     module.exports = function (app, options) {
 
         var cache = {};
@@ -92,6 +93,9 @@
                                 return next();
                             }
 
+                            //files = extendFiles(files);
+                            files = _.map(files, fileHolder);
+
                             script = parsedScript.createScript(req.params);
                             // Filter the files
                             var files = script.filter(files);
@@ -108,11 +112,11 @@
                             */
 
                             // Apply transformations
-                            var transform = script.transform(fileProxy(file), [transformFactory(req)]);
+                            var transform = script.transform(file, [transformFactory(req)]);
 
                             // TODO: Check that if transform then is AbstractTransform
 
-                            return download(cache, file, transform, req, res, next);
+                            return download(cache, file.data, transform, req, res, next);
                         });
                 }
             }
