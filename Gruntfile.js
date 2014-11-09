@@ -8,6 +8,7 @@ module.exports = function (grunt) {
                 src: [
                     //'bower_components/bootstrap/dist/css/bootstrap.css',
                     'public/css/bootswatch.slate.bootstrap.css',
+                    'bower_components/fontawesome/css/font-awesome.css',
                     'bower_components/dropzone/downloads/css/dropzone.css',
                     'bower_components/rainbow/themes/blackboard.css',
                     'public/css/styles.css'
@@ -60,6 +61,13 @@ module.exports = function (grunt) {
                 src: '*',
                 dest: 'dist/fonts/'
             },
+            fontawesomefonts: {
+                expand: true,
+                filter: 'isFile',
+                cwd: 'bower_components/fontawesome/fonts/',
+                src: '*',
+                dest: 'dist/fonts/'
+            },
             dropzoneimages: {
                 expand: true,
                 filter: 'isFile',
@@ -78,5 +86,6 @@ module.exports = function (grunt) {
                     'uglify:js',
                     'copy:images',
                     'copy:bootstrapfonts',
+                    'copy:fontawesomefonts',
                     'copy:dropzoneimages']);
 };

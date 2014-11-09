@@ -37,7 +37,9 @@
 <% for file in @files : %>
     <div class="col-lg-2 col-sm-3 col-xs-4 asset-outer-panel">
         <div class="panel panel-default asset-panel">
-        <div class="panel-heading asset-text"><%-file.file.name%></div>
+        <div class="panel-heading asset-text">
+            <a href="details/<%-file.id%>"><i class="fa fa-info-circle"></i>&nbsp;<%-file.file.name%></a>
+        </div>
         <div class="panel-body asset-panel-body">
             <div class="asset-thumbnail-container center">
                 <% if file.image : %>
