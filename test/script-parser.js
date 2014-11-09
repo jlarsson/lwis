@@ -1,4 +1,3 @@
-var assert = require('assert');
 var should = require('should');
 var parser = require('../modules/publication/script-parser');
 
