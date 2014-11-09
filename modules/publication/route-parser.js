@@ -79,6 +79,7 @@
     function isValidParameterName(parameterName) {
         if (reservedJavascripWords.hasOwnProperty(parameterName)) return false;
         if (reserverWords.hasOwnProperty(parameterName)) return false;
+        if ((/^\s*$/i).test(parameterName)) return false;
         try {
             var f = new Function(parameterName, 'return 1234');
             return 1234 == f(1);

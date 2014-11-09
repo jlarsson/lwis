@@ -8,6 +8,7 @@ describe('routeparser', function () {
     }
     function ok(route){
         var p = parser(route);
+        console.log('%j', p);
         p.valid.should.equal(true, p.errorMessage);
     }
     
@@ -17,7 +18,10 @@ describe('routeparser', function () {
     });
     it('rejects bad parameter names', function (){
         bad('/some/:/path');
+        bad('/some/:  /path');
+        bad('/some/:\t/path');
         bad('/some/:{path/');
+        bad('/some/:{/path/');
     });
     it('rejects reserved parameter names', function (){
         bad('/some/:this');
@@ -42,10 +46,15 @@ describe('routeparser', function () {
         bad('/');
     });
     
-    
     it('fails on non-string arguments', function (){
         bad();
         bad(['abc']);
         bad({a: 'abc'});
     });
+
+    /*
+    it('accepts optional route', function (){
+        ok('/foo/:bar*');
+    });
+    */
 });
