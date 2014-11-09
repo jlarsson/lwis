@@ -60,13 +60,41 @@
          'setDraw'];
 
 
-    var Proxy = classBuilder()
+    var transformMappings = {
+        'jpg': {
+            mt: 'image/jpg',
+            ext: 'jpg'
+        },
+        'image/jpg': {
+            mt: 'image/jpg',
+            ext: 'jpg'
+        },
+        'jpeg': {
+            mt: 'image/jpeg',
+            ext: 'jpeg'
+        },
+        'image/jpeg': {
+            mt: 'image/jpg',
+            ext: 'jpg'
+        },
+        'png': {
+            mt: 'image/png',
+            ext: 'png'
+        },
+        'image/png': {
+            mt: 'image/png',
+            ext: 'png'
+        },
+    };
+
+    var GmTransform = classBuilder()
         .inherit(AbstractTransform)
-        .construct(function (transformationHandle) {
-            var chain = this.__chain = [];
+        .construct(function (format) {
+            this.__chain = [];
+            this.__format = format !== undefined ? transformMappings[format] || transformMappings['jpg'] : undefined;
         })
         .method('__internal_get_signature', function () {
-            return _(this.__chain).map(function (entry) {
+            var signature = _(this.__chain).map(function (entry) {
                     return [entry.name, '(',
                             _.map(entry.args, function (a) {
                             return JSON.stringify(a || null);
@@ -75,20 +103,30 @@
                 })
                 .value()
                 .join('.');
+            if (this.__format) {
+                signature += '+' + this.__format.ext;
+            }
+            return signature;
         })
         .method('__internal_apply_transform', function (context, callback) {
             var chain = this.__chain;
 
             var sourceBlob = context.sourceBlob;
-            var destPath = context.destPath;
+            var destBlob = context.destBlob;
 
             var gmobj = gm(sourceBlob.path);
             for (var i = 0; i < chain.length; ++i) {
                 var entry = chain[i];
                 gmobj = gmobj[entry.name].apply(gmobj, entry.args);
             }
-            gmobj.write(destPath, callback);
-        })
+
+            if (this.__format) {
+                destBlob.headers.mimetype = this.__format.mt;
+                gmobj = gmobj.setFormat(this.__format.ext);
+            }
+
+            gmobj.write(destBlob.path, callback);
+        });
 
 
     function createMethod(name) {
@@ -106,9 +144,9 @@
         if (excluded_gm_methods.hasOwnProperty(method)) {
             continue;
         }
-        Proxy.method(method, createMethod(method));
+        GmTransform.method(method, createMethod(method));
     }
 
-    module.exports = Proxy.toClass();
+    module.exports = GmTransform.toClass();
 
 })(module);

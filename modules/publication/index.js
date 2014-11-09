@@ -11,7 +11,6 @@
     var gm = require('gm');
     var uuid = require('uuid');
     var createBlob = require('blobstore').createBlob;
-    var gmproxy = require('./gm-proxy');
     var validation = require('../validation');
     var transformFactory = require('./transform/transform-factory');
 
@@ -107,7 +106,7 @@
 
                             // Apply transformations
                             var transform = script.transform(file, [transformFactory()]);
-                        
+
                             // TODO: Check that if transform then is AbstractTransform
 
                             return download(cache, file, transform, req, res, next);
@@ -138,6 +137,7 @@
             var isDone = false;
             var sourceBlob;
             var derivedTempPath = path.resolve(app.get('temp'), uuid.v4());
+            var derivedBlob;
 
             async.series(actions, function (err) {
                 if (derivedTempPath) {
@@ -163,7 +163,7 @@
                         mimetype: file.mimetype,
                         blob: blob
                     };
-                    var ct = file.mimetype;
+                    var ct = blob.headers.mimetype || file.mimetype;
                     if (file.charset) {
                         ct = ct + '; charset=' + file.charset;
                     }
@@ -192,9 +192,13 @@
                     return cb();
                 }
 
+                derivedBlob = createBlob(derivedTempPath, {
+                    key: transformedBlobKey
+                });
                 transform.__internal_apply_transform({
+                    sourceFile: file,
                     sourceBlob: sourceBlob,
-                    destPath: derivedTempPath
+                    destBlob: derivedBlob
                 }, function (err) {
                     if (err) {
                         debug('failed to transform blob: %j', err);
@@ -207,9 +211,6 @@
                 if (isDone) {
                     return cb();
                 }
-                var derivedBlob = createBlob(derivedTempPath, {
-                    key: transformedBlobKey
-                });
                 blobstore.addBlob(derivedBlob, function (err) {
                     if (err) {
                         debug('failed to store derived blob: %j', err);

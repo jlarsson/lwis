@@ -3,8 +3,8 @@
     var gmTransform = require('./gm-transform');
     
     var Klass = classBuilder()
-        .method('image', function (){
-            return gmTransform();
+        .method('image', function (format){
+            return gmTransform(format);
         })
         .toClass();
 
