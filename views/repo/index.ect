@@ -40,15 +40,20 @@
         <div class="panel-heading asset-text"><%-file.file.name%></div>
         <div class="panel-body asset-panel-body">
             <div class="asset-thumbnail-container">
-                <a href="/admin/dl/<%-file.id%>">
-                    <img class="thumbnail img-responsive asset-thumbnail" src="<% if file.image : %>/admin/tn/<%- file.id %><% else: %>/images/rabbitandkitten.png<% end%>" alt="<%- file.file.name %>"/></a>
+                <% if file.image : %>
+                    <a href="/admin/dl/<%-file.id%>">
+                        <img class="thumbnail img-responsive asset-thumbnail" src="/admin/tn/<%- file.id %>" alt="<%- file.file.name %>"/>
+                    </a>
+                <% else : %>
+                    <a class="btn btn-sm" href="/admin/dl/<%-file.id%>">Download</a>
+                <% end %>
             </div>
             <div class="asset-text"><%- @formatSize(file.file.size) %></div>
             
             <div class="asset-text">
                 <% if file.image : %>
                     <%- file.image.width %> x <%- file.image.height %>
-                <% else: %>
+                <% else : %>
                     &nbsp;
                 <% end %>
             </div>
