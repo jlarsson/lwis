@@ -31,7 +31,7 @@
                 postLink: 'edit/' + uuid.v4()
             });
         });
-        router.get('/admin/publication/edit/:id', function (req, res) {
+        router.get('/admin/publication/edit/:id', function (req, res, next) {
             app.get('repo').query(function (model, cb) {
                     return cb(null, model.getPublication(req.params.id));
                 },
@@ -57,12 +57,15 @@
             };
             var errors = publicationValidator.validate(publication);
             if (errors) {
+                return res.json(errors);
+/*                
                 console.log('%j',errors);
                 return res.render('publication/edit-partial', {
                     title: publication.name,
                     publication: publication,
                     errors: errors || {}
                 });
+*/                
             }
 
             app.get('repo').execute('update-publication', publication,
@@ -70,12 +73,14 @@
                     if (!publication) {
                         return next(err);
                     }
-
+                    return res.json({}); 
+/*
                     res.render('publication/edit-partial', {
                         title: publication.name,
                         publication: publication,
                         errors: {}
                     });
+*/                    
                 });
         });
 

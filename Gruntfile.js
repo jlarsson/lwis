@@ -11,6 +11,7 @@ module.exports = function (grunt) {
                     'bower_components/fontawesome/css/font-awesome.css',
                     'bower_components/dropzone/downloads/css/dropzone.css',
                     'bower_components/rainbow/themes/blackboard.css',
+                    'bower_components/codemirror/lib/codemirror.css',
                     'public/css/styles.css'
                 ],
                 dest: 'dist/css/styles.css'
@@ -24,6 +25,8 @@ module.exports = function (grunt) {
                     'bower_components/rainbow/js/rainbow.js',
                     'bower_components/rainbow/js/language/generic.js',
                     'bower_components/rainbow/js/language/javascript.js',
+                    'bower_components/codemirror/lib/codemirror.js',
+                    'bower_components/codemirror/mode/javascript/javascript.js',
                     'public/js/page.js'
                 ],
                 dest: 'dist/js/scripts.js'

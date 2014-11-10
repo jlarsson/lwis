@@ -25,7 +25,7 @@
 
                 var result = v.validator(v.field, data[v.field]);
                 if (result) {
-                    (validation || (validation = {}))[v.field] = result;
+                    (validation || (validation = {}))[v.field] = result.toString();
                 }
             }
             return validation;
