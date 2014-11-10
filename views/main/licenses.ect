@@ -1,0 +1,23 @@
+<% extend 'layout.ect' %>
+<h3>Software and licenses</h3>
+<table class="table table-condensed table-striped table-hover">
+    <tr><th>Name</th><th>Versions</th><th>Repository</th><th>Licenses</th></tr>
+<% for lic in @licenses: %>
+    <tr>
+        <td><%- lic.name %></td>
+        <td><%- lic.versions.join('<br/>') %></td>
+        <td>
+            <% if lic.repository: %>
+                <a href="<%- lic.repository %>"><%- lic.repository %></a>
+            <% else: %>
+                <a href="https://www.npmjs.org/package/<%- lic.name %>"><i class="fa fa-question-circle"> Not found, try to locate</i></a>
+            <% end %>
+        </td>
+        <td>
+            <% for l in lic.licenses: %>
+                <a href="http://opensource.org/licenses/<%- l %>"><%- l %></a><br/>
+            <% end %>
+        </td>
+    </tr>
+<% end %>
+</table>
