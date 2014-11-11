@@ -3,15 +3,6 @@ module.exports = function (grunt) {
 
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
-        license: {
-            options: {
-                depth: null,
-                include: ['dependencies', 'peerDependencies', 'devDependencies']
-            },
-            dist: {
-                output: 'licenses.json'
-            }
-        },
         concat: {
             css: {
                 src: [
@@ -19,7 +10,7 @@ module.exports = function (grunt) {
                     'public/css/bootswatch.slate.bootstrap.css',
                     'bower_components/fontawesome/css/font-awesome.css',
                     'bower_components/dropzone/downloads/css/dropzone.css',
-                    'bower_components/rainbow/themes/blackboard.css',
+                    'bower_components/rainbow/themes/github.css',
                     'bower_components/codemirror/lib/codemirror.css',
                     'public/css/styles.css'
                 ],
@@ -92,7 +83,6 @@ module.exports = function (grunt) {
 
     require('load-grunt-tasks')(grunt);
     grunt.registerTask('default', [
-                    'license:dist',
                     'concat:css',
                     'concat:js',
                     'cssmin:css',
