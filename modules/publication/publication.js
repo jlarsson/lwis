@@ -15,7 +15,7 @@
     var transformFactory = require('./transform/transform-factory');
     //var extendFiles = require('./transform/extend-files');
     var fileHolder = require('./transform/file-holder');
-    
+
     module.exports = function (app, options) {
 
         var cache = {};

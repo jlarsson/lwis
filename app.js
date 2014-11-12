@@ -7,7 +7,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var busboy = require('connect-busboy');
 var expressValidator = require('express-validator');
-var lwis = require('./modules/lwis');
+var loader = require('./modules/loader');
 
 
 var app = express();
@@ -41,7 +41,7 @@ app.use(cookieParser());
 app.use(busboy());
 
 // Configure lwis
-lwis(app).configure();
+loader(app).configure();
 
 app.use(express.static(path.join(__dirname, 'dist')));
 

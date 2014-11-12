@@ -7,22 +7,20 @@
         "modules": {
             // blostore - required
             // component for storing blobs (i.e uploaded files and derived subassets)
-            "./modules/blobstore": {},
+            "./modules/blobstore/blobstore.js": {},
             // repository - required
             // component for storing metadata about blobs
-            "./modules/repository": {},
+            "./modules/repository/repository.js": {},
 
             // metadata extraction
-            "./modules/metadata-extractor": {
+            "./modules/metadata/metadata.js": {
                 "extractors": {
-                    //"./modules/metadata/lwip-extractor": {}
-                    "./modules/metadata/gm-extractor": {},
-                    "./modules/metadata/chardet": {}
+                    "./modules/metadata/set-image": {},
+                    "./modules/metadata/set-charset": {}
                 }
             },
 
-            // transformations
-            "./modules/publication": {},
+            "./modules/publication/publication.js": {},
 
             "./routes/main/index": {
                 "base": "/"

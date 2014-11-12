@@ -1,7 +1,7 @@
 (function (module) {
     'use strict';
 
-    var debug = require('debug')('metadata-extractor');
+    var debug = require('debug')('lwis:metadata');
     var _ = require('lodash');
     var async = require('async');
 
