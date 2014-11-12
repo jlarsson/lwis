@@ -3,7 +3,7 @@
 
     var gm = require('gm');
     var classBuilder = require('ryoc');
-    var AbstractTransform = require('./abstract-transform');
+    var AbstractTransformer = require('./abstract-transformer');
     var _ = require('lodash');
 
     var excluded_gm_methods = {
@@ -87,9 +87,9 @@
         },
     };
 
-    var GmTransform = classBuilder()
-        .inherit(AbstractTransform)
-        .construct(function (format) {
+    var ImageTransformer = classBuilder()
+        .inherit(AbstractTransformer)
+        .construct(function imageTransformer(format) {
             this.__chain = [];
             this.__format = format !== undefined ? transformMappings[format] || transformMappings['jpg'] : undefined;
         })
@@ -144,9 +144,9 @@
         if (excluded_gm_methods.hasOwnProperty(method)) {
             continue;
         }
-        GmTransform.method(method, createMethod(method));
+        ImageTransformer.method(method, createMethod(method));
     }
 
-    module.exports = GmTransform.toClass();
+    module.exports = ImageTransformer.toClass();
 
 })(module);

@@ -4,9 +4,9 @@
     var typeis = require('type-is');
     var _ = require('lodash');
 
-    var Klass = classBuilder()
-        .construct(function (file) {
-            this.data = file;
+    var TransformItem = classBuilder()
+        .construct(function transformItem(data) {
+            this.data = data;
         })
         .method('is', function (mimetype) {
             var req = {
@@ -18,8 +18,8 @@
             return typeis(req, mimetype);
         })
     .toClass();
-    
-    
-    module.exports = Klass;
+
+
+    module.exports = TransformItem;
 
 })(module);
