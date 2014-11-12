@@ -8,10 +8,9 @@ describe('routeparser', function () {
     }
     function ok(route){
         var p = parser(route);
-        console.log('%j', p);
         p.valid.should.equal(true, p.errorMessage);
     }
-    
+
     it('parses parameterless route', function (){
         ok('/some/path');
         ok('/some/path/')
@@ -41,11 +40,11 @@ describe('routeparser', function () {
         p.valid.should.equal(true);
         p.params.should.eql(['path','show']);
     });
-    
+
     it('reject root route', function (){
         bad('/');
     });
-    
+
     it('fails on non-string arguments', function (){
         bad();
         bad(['abc']);

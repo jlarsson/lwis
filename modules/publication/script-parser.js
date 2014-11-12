@@ -1,103 +1,113 @@
 (function (module) {
+    'use strict';
 
+    var fs = require('fs');
+    var fspath = require('path');
     var vm = require('vm');
     var _ = require('lodash');
+    var uuid = require('uuid');
     var classBuilder = require('ryoc');
 
-    module.exports = function scriptParser(code, params) {
+  var Script = classBuilder()
+      .construct(function (options, params) {
+          this.options = options;
+          this.params = params;
+          this.glob = {};
+          this.context = {};
+          this.glob[this.options.globalName] = this.context;
+      })
+      .method('filter', function (list) {
+          if (this.options.hasFilter) {
+              this.context.command = 'applyFilter';
+              this.context.filter = {
+                self: list,
+                args: []
+              };
+              this.context.params = this.params;
+              return this.options.vmScript.runInNewContext(this.glob);
+          }
+          return [];
+      })
+      .method('transform', function (self, args) {
+          if (this.options.hasTransform) {
+              this.context.command = 'applyTransform';
+              this.context.transform = {
+                self: self,
+                args: args||[]
+              };
+              this.context.params = this.params;
+              return this.options.vmScript.runInNewContext(this.glob);
+          }
+          return null;
+      })
+      .toClass();
 
-        var globalName = '__lwis__script__args__';
+  var Parsing = classBuilder()
+      .construct(function (options) {
+          this.options = options;
+      })
+      .getter('valid', function (){ return this.options.hasFilter && !this.options.error; })
+      .getter('error', function () { return this.options.error; })
+      .getter('hasFilter', function () { return this.options.hasFilter; })
+      .getter('hasTransform', function () { return this.options.hasTransform; })
+      .method('createScript', function (params) {
+          return new Script(this.options, params);
+      })
+      .toClass();
 
-        var ScriptClass = classBuilder()
-            .construct(function (script, options) {
-                var context = {};
-                context[globalName] = {};
-                this.script = script;
-                this.options = options;
-                this.context = context;
-            })
-            .method('filter', function (list) {
-                if (this.options.hasFilter) {
-                    this.context[globalName].command = 'applyFilter';
-                    this.context[globalName].list = list;
-                    this.context[globalName].params = this.options.params;
-                    return this.script.runInNewContext(this.context);
-                }
-            })
-            .method('transform', function (self, args) {
-                if (this.options.hasTransform) {
-                    this.context[globalName].command = 'applyTransform';
-                    this.context[globalName].self = self;
-                    this.context[globalName].args = args||[];
-                    this.context[globalName].params = this.options.params;
-                    return this.script.runInNewContext(this.context);
-                }
-            })
-            .toClass();
+  var transformScriptTemplate = fs.readFileSync(fspath.resolve(__dirname,'transform-script-template.txt'), {encoding: 'utf-8'});
 
-        var ParsingKlass = classBuilder()
-            .construct(function (script) {
-                this.script = script;
-            })
-            .property('valid')
-            .property('error')
-            .property('hasFilter')
-            .property('hasTransform')
-            .method('createScript', function (params) {
-                return new ScriptClass(this.script, {
-                    hasFilter: this.hasFilter,
-                    hasTransform: this.hasTransform,
-                    params: params || {}
-                });
-            })
-            .toClass();
+  function createVmScript(scriptData) {
+      var initparameterNamesCode = _.map(scriptData.parameterNames, function (p){
+        return 'var ' + p + ' = arguments[0].params["' + p + '"];';
+      }).join('');
 
-        function createScript(code) {
-            var scriptTemplate = '(function () { \'use strict\'; $params $code \
-            ;switch (arguments[0].command){ \
-                case "applyFilter": return arguments[0].list.filter(function(){return filter.call(arguments[0]);}); \
-                case "getFilter": try { return (filter instanceof Function) ? arguments[0].secret : null; } catch(e){ if (!(e instanceof ReferenceError)) throw e; return undefined; }\
-                case "getTransform": try { return (transform instanceof Function) ? arguments[0].secret : null; } catch(e){ if (!(e instanceof ReferenceError)) throw e; return undefined; }\
-                case "applyTransform": return transform.apply(arguments[0].self, arguments[0].args); \
-            } })(__lwis__script__args__);';
+      // Modify temlate, order of application is important (last to first)
+      var scriptCode = transformScriptTemplate
+        .replace('$global$', scriptData.globalName)
+        .replace('$user-code$', scriptData.code)
+        .replace('$param-initialization$', initparameterNamesCode);
 
-            var scriptCode = scriptTemplate.replace('$params', _.map(params, function (p) {
-                return 'var ' + p + ' = arguments[0].params["' + p + '"];'
-            }).join(''))
-                .replace('$code', code);
+      //console.log(scriptCode);
+      return vm.createScript(scriptCode);
+  }
 
-            return vm.createScript(scriptCode);
-        }
 
-        var script;
-        var parsingError = null;
-        try {
-            script = createScript(code);
-        } catch (e) {
-            if (!(e instanceof SyntaxError)) {
-                throw e;
-            }
-            script = createScript('');
-            parsingError = e;
-        }
+    module.exports = function scriptParser(code, parameterNames) {
+      var scriptData = {
+        code: code,
+        parameterNames: parameterNames,
+        globalName: 'g_' + uuid.v4().split('-').join('')
+      };
+      var vmScript = null;
+      var parsingError = null;
+      try {
+          vmScript = createVmScript(scriptData);
+      } catch (e) {
+          parsingError = e;
+      }
 
-        function diagnoseScript(script, command) {
+        function diagnoseScript(vmScript, command) {
             var secret = {};
-            var glbl = {};
-            glbl[globalName] = {};
-            glbl[globalName].command = command;
-            glbl[globalName].secret = secret;
-            glbl[globalName].params = {};
-            return script.runInNewContext(glbl) === secret;
+            var glob = {};
+            var secret = uuid.v4();
+            var context = {
+              command: command,
+              secret: secret
+            }
+            glob[scriptData.globalName] = context;
+            return vmScript.runInNewContext(glob) === secret;
         };
 
-        var parsing = new ParsingKlass(script);
-        parsing.valid = parsingError === null;
-        parsing.error = parsingError;
-        parsing.hasFilter = diagnoseScript(script, 'getFilter');
-        parsing.hasTransform = diagnoseScript(script, 'getTransform');
-        return parsing;
-
+      var parsing = new Parsing({
+        vmScript: vmScript,
+        error: parsingError,
+        globalName: scriptData.globalName,
+        parameterNames: parameterNames,
+        hasFilter: vmScript && diagnoseScript(vmScript, 'getFilter'),
+        hasTransform: vmScript && diagnoseScript(vmScript, 'getTransform')
+      });
+      return parsing;
     };
 
 })(module);
