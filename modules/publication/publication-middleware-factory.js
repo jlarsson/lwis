@@ -11,7 +11,7 @@
   var uuid = require('uuid');
   var _ = require('lodash');
   var createBlob = require('blobstore').createBlob;
-  
+
   module.exports = function configurePublicationMiddlewareFactory(app, options) {
 
     app.set('publication-middleware-factory', factory);
@@ -176,6 +176,7 @@
         derivedBlob = createBlob(derivedTempPath, {
           key: transformedBlobKey
         });
+        derivedBlob.headers.derivedfrom = file.blob;
         transform.__internal_apply_transform({
           sourceFile: file,
           sourceBlob: sourceBlob,

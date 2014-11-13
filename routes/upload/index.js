@@ -74,6 +74,7 @@
             function addBlob(cb) {
                 debug('addBlob');
                 var blob = blobstore.createBlob(tempPath);
+                blob.headers.mimetype = fileData.mimetype;
                 app.get('blobstore').addBlob(blob, cb);
             },
             function onBlobAdded(blob, cb) {

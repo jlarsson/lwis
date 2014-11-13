@@ -21,8 +21,6 @@
       }
     });
 
-
-
     var dynamicRevision = {
       valid: true
     };
@@ -30,13 +28,9 @@
 
 
     function applyDynamicPublications() {
-      // Invalidate all existing transformations
-      dynamicRevision.valid = false;
-
-      var revision = dynamicRevision = {
-        valid: true
+      var revision = {
+        valid: false // not valid until all publications are routed below
       };
-
 
       app.get('repo').query(function(model, cb) {
           return cb(null, model.getPublications());
@@ -56,6 +50,11 @@
               });
             }
           });
+          // Invalidate all existing publications
+          dynamicRevision.valid = false;
+          dynamicRevision = revision;
+          revision.valid = true;
+
         });
     };
   }
