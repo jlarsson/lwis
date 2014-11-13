@@ -1,6 +1,6 @@
 (function() {
   'use strict';
-  if (['get-map', 'get-reduce', 'map', 'reduce'].indexOf(arguments[0].command) < 0) {
+  if (['map', 'reduce', 'get-map', 'get-reduce'].indexOf(arguments[0].command) < 0) {
     throw new Error('Unexpected command');
   }
   if (arguments[0].command == 'get-map') {
@@ -36,6 +36,6 @@
     return arguments[0].map.self.forEach(map);
   }
   if (arguments[0].command == 'reduce') {
-    return reduce.call(arguments[0].reduce.self, arguments[0].reduce.args);
+    return reduce.apply(arguments[0].reduce.self, arguments[0].reduce.args);
   }
 })($global$);

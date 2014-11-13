@@ -2,7 +2,6 @@
   'use strict';
 
   var debug = require('debug')('lwis:publication-middleware')
-  var scriptparser = require('./script-parser');
   var routeparser = require('./route-parser');
   var transformResponse = require('./transform/response');
   var transformItem = require('./transform/transform-item');
@@ -11,11 +10,13 @@
   var async = require('async');
   var uuid = require('uuid');
   var _ = require('lodash');
-
+  var createBlob = require('blobstore').createBlob;
+  
   module.exports = function configurePublicationMiddlewareFactory(app, options) {
 
     app.set('publication-middleware-factory', factory);
 
+    var scriptparser = app.get('filter-transform-parser');
 
     var cache = {};
 

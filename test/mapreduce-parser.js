@@ -1,7 +1,7 @@
 var should = require('should');
 var parser = require('../modules/scripting/mapreduce-parser');
 
-describe('scriptparser', function() {
+describe('mapreduce parser', function() {
   function ok(scriptCode, parameterNames) {
 
     var parsing = parser(scriptCode);

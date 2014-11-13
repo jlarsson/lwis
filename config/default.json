@@ -12,6 +12,9 @@
             // component for storing metadata about blobs
             "./modules/repository/repository.js": {},
 
+            // User scripting
+            "./modules/scripting/scripting.js": {},
+
             // metadata extraction
             "./modules/metadata/metadata.js": {
                 "extractors": {
