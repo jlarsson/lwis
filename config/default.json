@@ -5,21 +5,15 @@
             "appdata": "./.data"
         },
         "modules": {
-            // blostore - required
-            // component for storing blobs (i.e uploaded files and derived subassets)
             "./modules/blobstore/blobstore.js": {},
-            // repository - required
-            // component for storing metadata about blobs
             "./modules/repository/repository.js": {},
-
-            // metadata extraction
             "./modules/metadata/metadata.js": {
                 "extractors": {
                     "./modules/metadata/set-image": {},
                     "./modules/metadata/set-charset": {}
                 }
             },
-
+            "./modules/main/main.js": {},
             "./modules/publication/publication.js": {},
 
             "./routes/main/index": {

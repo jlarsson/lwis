@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>
+    <layout-placeholder name="title" />
+  </title>
+  <meta name="description" content="" />
+  <meta name="keywords" content="" />
+  <link rel="stylesheet" href="/css/styles.min.css" />
+  <layout-placeholder name="script" />
+</head>
+
+<body>
+  <include template="./header.marko" />
+
+  <div class="container">
+    <layout-placeholder name="content" />
+  </div>
+  <include template="./footer.marko" />
+  <script type="text/javascript" src="/js/scripts.min.js"></script>
+  <layout-placeholder name="script" />
+</body>
+
+</html>
