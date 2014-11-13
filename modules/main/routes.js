@@ -20,13 +20,12 @@
   });
 
   module.exports = function(app, options) {
-    var router = new express.Router();
-    app.use('/lwis', router);
-    router
+
+    routeHelper.useRoute(app, '/lwis')
       .get('/index', routeHelper.html('./views/index.marko', {
         title: 'lwis'
       }))
-      .get('/credits', routeHelper.html('./views/credits.marko', function(cb) {
+      .get('/credits', routeHelper.html('./views/credits.marko', function(req, cb) {
         cb(null, {
           title: 'Credits',
           credits: _credits

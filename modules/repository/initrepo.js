@@ -52,7 +52,7 @@
     module.exports = function (app, options) {
         var folder = path.resolve(app.get('appdata'), '.repo/.journal');
         debug('using repository in %s', folder);
-        
+
         var repository = highlander.repository({
             model: new Model(),
             journal: highlander.fileJournal({
@@ -67,7 +67,7 @@
         repository.registerCommand('update-publication', function (ctx, cb) {
             return cb(null, ctx.model.updatePublication(ctx.args));
         });
-        
+
         app.set('repo', repository);
     };
 

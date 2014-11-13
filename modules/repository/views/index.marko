@@ -1,0 +1,70 @@
+<layout-use template="../../shared/views/layout.marko">
+  <layout-put into="title">$data.title</layout-put>
+  <layout-put into="content">
+    <div class="row asset-row">
+      <for each="file in data.files">
+        <div class="col-lg-2 col-sm-3 col-xs-4 asset-outer-panel">
+          <div class="panel panel-default asset-panel">
+            <div class="panel-heading asset-text">
+              <a href="details/$file.id"><i class="fa fa-info-circle"></i>&nbsp;$file.file.name</a>
+            </div>
+            <div class="panel-body asset-panel-body">
+              <div class="asset-thumbnail-container center">
+                <if test="file.image">
+                  <a href="/admin/dl/$file.id">
+                    <img class="thumbnail img-responsive asset-thumbnail" src="/admin/tn/$file.id" alt="$file.file.name" />
+                  </a>
+                </if>
+                <else>
+                  <a class="btn btn-sm" href="/admin/dl/$file.id">Download</a>
+                </else>
+              </div>
+              <div class="asset-text">${data.formatSize(file.file.size)}</div>
+
+              <div class="asset-text">
+                <if test="file.image">
+                  $file.image.width x $file.image.height
+                </if>
+                <else>
+                  &nbsp;
+                </else>
+              </div>
+            </div>
+          </div>
+        </div>
+      </for>
+    </div>
+  </layout-put>
+
+  <layout-put into="head">
+    <style type="text/css">
+      .asset-panel {
+        padding: 0px;
+        margin: 1px;
+      }
+      .asset-outer-panel {
+        padding: 0;
+        margin: 0;
+      }
+      .asset-panel-body {
+        padding: 0;
+      }
+      .asset-thumbnail-container {
+        padding: 0;
+        margin: 0;
+        height: 165px;
+      }
+      .asset-thumbnail {
+        padding: 0;
+        margin: auto;
+      }
+      .asset-text {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-align: center;
+      }
+    </style>
+  </layout-put>
+
+</layout-use>

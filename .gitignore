@@ -2,6 +2,7 @@
 tmp
 dist
 .data
+*.marko.js
 
 # Logs
 logs

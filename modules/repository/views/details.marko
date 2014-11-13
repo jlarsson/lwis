@@ -1,0 +1,6 @@
+<layout-use template="../../shared/views/layout.marko">
+  <layout-put into="title">$data.title</layout-put>
+  <layout-put into="content">
+    <pre><code data-language="javascript">$!{JSON.stringify(data.file,null,2)}</code></pre>
+  </layout-put>
+</layout-use>

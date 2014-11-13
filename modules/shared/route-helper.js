@@ -1,6 +1,7 @@
 (function(module) {
   'use strict';
 
+  var express = require('express');
   var path = require('path');
   var marko = require('marko');
 
@@ -9,6 +10,12 @@
   module.exports = function(dirname) {
 
     var localTemplateCache = {};
+
+    function useRoute(app, path) {
+      var router = new express.Router();
+      app.use(path, router);
+      return router;
+    }
 
     function html(templatePath, model) {
 
@@ -27,10 +34,9 @@
 
       return function(req, res) {
         res.set('Content-Type', 'text/html; charset=utf-8');
-        console.dir(model);
 
         if (model instanceof Function) {
-          return model(function(err, data) {
+          return model(req, function(err, data) {
             return template.render(data, res);
           })
 
@@ -40,6 +46,7 @@
     }
 
     return {
+      useRoute: useRoute,
       html: html
     };
   }
