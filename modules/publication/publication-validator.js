@@ -2,7 +2,6 @@
   'use strict';
 
   var validation = require('../validation');
-  var scriptparser = require('./script-parser');
   var routeparser = require('./route-parser');
 
   module.exports = function configurePublicationValidator(app, options) {
@@ -16,12 +15,9 @@
         return p.valid ? null : p.errorMessage;
       })
       .use('script', function(f, value) {
-        var p = scriptparser(value, []);
+        var p = app.get('filter-transform-parser')(value, []);
         if (p.error) {
           return p.error;
-        }
-        if (!p.hasFilter) {
-          return 'The script must atleast have a filter() function';
         }
         return null;
       })

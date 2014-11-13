@@ -7,6 +7,7 @@
         "modules": {
             "./modules/blobstore/blobstore.js": {},
             "./modules/repository/repository.js": {},
+            "./modules/scripting/scripting.js": {},
             "./modules/metadata/metadata.js": {
                 "extractors": {
                     "./modules/metadata/set-image": {},
