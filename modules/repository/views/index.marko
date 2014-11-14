@@ -1,12 +1,38 @@
 <layout-use template="../../shared/views/layout.marko">
   <layout-put into="title">$data.title</layout-put>
+
+    <layout-put into="navigation">
+    <nav role="navigation" if="data.pageCount>1">
+      <ul class="nav navbar-nav pagination">
+        <var name="navRange" value="data.formatPageIndexRange(5)"/>
+        <if test="navRange.head">
+          <li><a href="${navRange.first-1}"><span aria-hidden="true">&laquo;</span><span class="sr-only">Previous</span></a></li>
+        </if>
+        <for each="i from navRange.first to navRange.last-1">
+          <if test="i == data.pageIndex">
+            <li class="active"><a href="">$i</a></li>
+          </if>
+          <else>
+            <li><a href="$i">$i</a></li>
+          </else>
+        </for>
+        <if test="navRange.tail">
+          <li><a href="${data.pageIndex + 10}"><span aria-hidden="true">&raquo;</span><span class="sr-only">Next</span></a></li>
+        </if>
+      </ul>
+    </nav>
+  </layout-put>
+
   <layout-put into="content">
     <div class="row asset-row">
       <for each="file in data.files">
         <div class="col-lg-2 col-sm-3 col-xs-4 asset-outer-panel">
+          <if test="file.paging">
+            <div id="file-page-$file.paging.index"></div>
+          </if>
           <div class="panel panel-default asset-panel">
             <div class="panel-heading asset-text">
-              <a href="details/$file.id"><i class="fa fa-info-circle"></i>&nbsp;$file.file.name</a>
+              <a href="../details/$file.id"><i class="fa fa-info-circle"></i>&nbsp;$file.file.name</a>
             </div>
             <div class="panel-body asset-panel-body">
               <div class="asset-thumbnail-container center">
@@ -37,6 +63,9 @@
 
   <layout-put into="head">
     <style type="text/css">
+      .pagination {
+        margin: 5px 5px;
+      }
       .asset-panel {
         padding: 0px;
         margin: 1px;

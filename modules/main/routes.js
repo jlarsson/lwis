@@ -22,6 +22,7 @@
   module.exports = function(app, options) {
 
     routeHelper.useRoute(app, '/lwis')
+      .get('/', function (req,res){ return res.redirect('/lwis/index'); })
       .get('/index', routeHelper.html('./views/index.marko', {
         title: 'lwis'
       }))

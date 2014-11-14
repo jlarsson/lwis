@@ -27,7 +27,8 @@ module.exports = function (grunt) {
                     'bower_components/rainbow/js/language/javascript.js',
                     'bower_components/codemirror/lib/codemirror.js',
                     'bower_components/codemirror/mode/javascript/javascript.js',
-                    'public/js/page.js'
+                    'public/js/page.js',
+                    'public/js/lazyimages.js'
                 ],
                 dest: 'dist/js/scripts.js'
             }
