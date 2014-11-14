@@ -26,14 +26,14 @@
         function(err, files) {
           var pageSize = 20;
           var pageIndex = Number(req.params.pageIndex) || 0;
-          if (pageIndex*pageSize >= files.length){
+          if (pageIndex * pageSize >= files.length) {
             pageIndex = 0;
           }
 
           var pageCount = Math.floor((files.length + pageSize - 1) / pageSize);
 
-          var startIndex = pageIndex*pageSize;
-          var slice = files.slice(startIndex, startIndex+pageSize);
+          var startIndex = pageIndex * pageSize;
+          var slice = files.slice(startIndex, startIndex + pageSize);
           var model = {
             title: 'Repository',
             files: slice,
@@ -42,29 +42,40 @@
             pageSize: pageSize,
             pageCount: pageCount,
             formatSize: filesize,
-            formatPageIndexRange: function (n) {
+            formatPageIndexRange: function(n) {
               var first = pageIndex - n;
               if (first < 0) {
                 first = 0;
               }
-              var last = first + n*2 + 1;
-              if (last >= pageCount) {
-                last = pageCount - 1;
-                first = last - n* 2 -1;
-                if (first < 0){
+              var last = first + 2*n + 1;
+              if (last > pageCount) {
+                last = pageCount;
+                first = last - n * 2 - 1;
+                if (first < 0) {
                   first = 0;
                 }
               }
-              return { head: first > 0, tail: last < pageCount-1, first: first, last: last };
+              var next = last + n;
+              if (next > pageCount-1) {
+                next = pageCount-1;
+              };
+              var prev = first - n - 1;
+
+              return  {
+                first: first,
+                last: last,
+                prev: prev,
+                next: next
+              };
             }
 
           };
-          return cb(err,model);
+          return cb(err, model);
 
 
 
           var f = [];
-          for(var i = 0; i < 100; ++i){
+          for (var i = 0; i < 100; ++i) {
             f = f.concat(files);
           }
           files = f;
@@ -73,10 +84,12 @@
           var currentPage = 0;
           var currentIndex = 0;
           // Mark pages...
-          while (currentIndex < files.length){
-              files[currentIndex].paging = {index: currentPage};
-              currentIndex += pageSize;
-              currentPage = currentPage + 1;
+          while (currentIndex < files.length) {
+            files[currentIndex].paging = {
+              index: currentPage
+            };
+            currentIndex += pageSize;
+            currentPage = currentPage + 1;
           }
           return cb(err, {
             title: 'Repository',

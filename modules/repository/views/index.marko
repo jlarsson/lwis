@@ -1,23 +1,32 @@
 <layout-use template="../../shared/views/layout.marko">
   <layout-put into="title">$data.title</layout-put>
 
-    <layout-put into="navigation">
+  <layout-put into="navigation">
     <nav role="navigation" if="data.pageCount>1">
+      <var name="navWidth" value="2" />
+      <var name="navRange" value="data.formatPageIndexRange(navWidth)" />
+      <!--
+      <span>navRange: ${JSON.stringify(navRange)}</span><br/>
+      <span>data: ${JSON.stringify({count: data.fileCount, pageIndex: data.pageIndex, pageCount: data.pageCount, pageSize: data.pageSize })}</span>
+      -->
       <ul class="nav navbar-nav pagination">
-        <var name="navRange" value="data.formatPageIndexRange(5)"/>
-        <if test="navRange.head">
-          <li><a href="${navRange.first-1}"><span aria-hidden="true">&laquo;</span><span class="sr-only">Previous</span></a></li>
+        <if test="navRange.prev >= 0">
+          <li><a href="${navRange.prev}"><span aria-hidden="true">&laquo;</span><span class="sr-only">Previous</span></a>
+          </li>
         </if>
         <for each="i from navRange.first to navRange.last-1">
-          <if test="i == data.pageIndex">
-            <li class="active"><a href="">$i</a></li>
+          <if test="i === data.pageIndex">
+            <li class="active"><a href="">${i}</a>
+            </li>
           </if>
           <else>
-            <li><a href="$i">$i</a></li>
+            <li><a href="$i">${i}</a>
+            </li>
           </else>
         </for>
-        <if test="navRange.tail">
-          <li><a href="${data.pageIndex + 10}"><span aria-hidden="true">&raquo;</span><span class="sr-only">Next</span></a></li>
+        <if test="navRange.next >= navRange.last">
+          <li><a href="${navRange.next}"><span aria-hidden="true">&raquo;</span><span class="sr-only">Next</span></a>
+          </li>
         </if>
       </ul>
     </nav>
