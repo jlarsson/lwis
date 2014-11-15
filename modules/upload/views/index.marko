@@ -1,10 +1,26 @@
 <layout-use template="../../shared/views/layout.marko">
   <layout-put into="title">$data.title</layout-put>
+  <layout-put into="head">
+    <style type="text/css">
+      .progress {
+        width: 10em;
+        margin: 0;
+      }
+    </style>
+  </layout-put>
   <layout-put into="navigation">
-    <div class="progress">
-      <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
-      </div>
-    </div>
+    <ul class="nav navbar-nav">
+      <li>
+        <a href="#">
+          <div class="progress">
+            <div class="progress-bar progress-bar-success" style="width: 0%">
+            </div>
+            <div class="progress-bar progress-bar-danger" style="width: 0%">
+            </div>
+          </div>
+        </a>
+      </li>
+    </ul>
   </layout-put>
 
   <layout-put into="content">
@@ -17,9 +33,31 @@
       Dropzone.autoDiscover = false;
       Dropzone.options.dzUploadForm = {
         init: function() {
+          var added = 0;
+          var success = 0;
+          var error = 0;
+
+          function invalidate() {
+            var s = added === 0 ? 0 : Math.round(100 * success / added);
+            var e = added === 0 ? 0 : Math.round(100 * error / added);
+            $('.progress-bar-success').css('width', '' + s + '%').attr('aria-valuenow', s);
+            $('.progress-bar-danger').css('width', '' + e + '%').attr('aria-valuenow', e);
+          }
+          this.on('addedfile', function() {
+            ++added;
+            invalidate();
+          })
+          this.on('success', function() {
+            ++success;
+            invalidate();
+          })
+          this.on('error', function() {
+            ++error;
+            invalidate();
+          })
           this.on('totaluploadprogress', function(percent) {
-            var p = '' + percent;
-            $('.progress-bar').css('width', p + '%').attr('aria-valuenow', p);
+            /*var p = '' + percent;
+            $('.progress-bar').css('width', p + '%').attr('aria-valuenow', p);*/
           });
           this.on('error', function() {
             $('.progress-bar').addClass('progress-bar-danger');
