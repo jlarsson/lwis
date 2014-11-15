@@ -5,27 +5,23 @@
     <nav role="navigation" if="data.pageCount>1">
       <var name="navWidth" value="2" />
       <var name="navRange" value="data.formatPageIndexRange(navWidth)" />
-      <!--
-      <span>navRange: ${JSON.stringify(navRange)}</span><br/>
-      <span>data: ${JSON.stringify({count: data.fileCount, pageIndex: data.pageIndex, pageCount: data.pageCount, pageSize: data.pageSize })}</span>
-      -->
       <ul class="nav navbar-nav pagination">
         <if test="navRange.prev >= 0">
-          <li><a href="${navRange.prev}"><span aria-hidden="true">&laquo;</span><span class="sr-only">Previous</span></a>
+          <li><a href="${data.mkrel(navRange.prev)}"><span aria-hidden="true">&laquo;</span><span class="sr-only">Previous</span></a>
           </li>
         </if>
         <for each="i from navRange.first to navRange.last-1">
           <if test="i === data.pageIndex">
-            <li class="active"><a href="">${i}</a>
+            <li class="active"><a href="">$i</a>
             </li>
           </if>
           <else>
-            <li><a href="$i">${i}</a>
+            <li><a href="${data.mkrel(i)}">$i</a>
             </li>
           </else>
         </for>
         <if test="navRange.next >= navRange.last">
-          <li><a href="${navRange.next}"><span aria-hidden="true">&raquo;</span><span class="sr-only">Next</span></a>
+          <li><a href="${data.mkrel(navRange.next)}"><span aria-hidden="true">&raquo;</span><span class="sr-only">Next</span></a>
           </li>
         </if>
       </ul>
@@ -41,7 +37,7 @@
           </if>
           <div class="panel panel-default asset-panel">
             <div class="panel-heading asset-text">
-              <a href="../details/$file.id"><i class="fa fa-info-circle"></i>&nbsp;$file.file.name</a>
+              <a href="${data.mkrel('details/'+file.id)}"><i class="fa fa-info-circle"></i>&nbsp;$file.file.name</a>
             </div>
             <div class="panel-body asset-panel-body">
               <div class="asset-thumbnail-container center">

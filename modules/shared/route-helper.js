@@ -12,7 +12,7 @@
     var localTemplateCache = {};
 
     function useRoute(app, path) {
-      var router = new express.Router();
+      var router = new express.Router({strict: true});
       app.use(path, router);
       return router;
     }

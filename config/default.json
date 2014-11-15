@@ -1,35 +1,36 @@
 {
-    "lwis": {
-        "folders": {
-            "temp": "./.data/.temp",
-            "appdata": "./.data"
-        },
-        "modules": {
-            "./modules/blobstore/blobstore.js": {},
-            "./modules/repository/repository.js": {},
-            "./modules/scripting/scripting.js": {},
-            "./modules/metadata/metadata.js": {
-                "extractors": {
-                    "./modules/metadata/set-image": {},
-                    "./modules/metadata/set-charset": {}
-                }
-            },
-            "./modules/main/main.js": {},
-            "./modules/publication/publication.js": {},
-
-            "./routes/main/index": {
-                "base": "/"
-            },
-            "./routes/repo/index": {
-                "base": "/admin/repository"
-            },
-            "./routes/upload/index": {
-                "base": "/admin/upload"
-            },
-
-
-            "./routes/publication": {}
+  "lwis": {
+    "folders": {
+      "temp": "./.data/.temp",
+      "appdata": "./.data"
+    },
+    "modules": {
+      "./modules/blobstore/blobstore.js": {},
+      "./modules/repository/repository.js": {},
+      "./modules/scripting/scripting.js": {},
+      "./modules/metadata/metadata.js": {
+        "extractors": {
+          "./modules/metadata/set-image": {},
+          "./modules/metadata/set-charset": {}
         }
+      },
+      "./modules/main/main.js": {},
+      "./modules/publication/publication.js": {},
+      "./modules/upload/upload.js": {},
 
+      "./routes/main/index": {
+        "base": "/"
+      },
+      "./routes/repo/index": {
+        "base": "/admin/repository"
+      },
+      "./routes/upload/index": {
+        "base": "/admin/upload"
+      },
+
+
+      "./routes/publication": {}
     }
+
+  }
 }
