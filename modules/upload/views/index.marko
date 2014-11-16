@@ -6,12 +6,32 @@
         width: 10em;
         margin: 0;
       }
+      #console {
+        padding: 15px;
+        background-color: #333;
+        font-size: 14px;
+        font-family: monospace;
+        max-height: 20em;
+        overflow-y: scroll;
+      }
+      #console .prompt {
+        color: #fff;
+      }
+      #console .info {
+        color: white;
+      }
+      #console .success {
+        color: #1ad027;
+      }
+      #console .error {
+        color: #ef0505;
+      }
     </style>
   </layout-put>
   <layout-put into="navigation">
     <ul class="nav navbar-nav">
       <li>
-        <a href="#">
+        <a href="#" id="progress">
           <div class="progress">
             <div class="progress-bar progress-bar-success" style="width: 0%">
             </div>
@@ -24,18 +44,47 @@
   </layout-put>
 
   <layout-put into="content">
+    <div id="console-panel" class="panel panel-default" style="display:none;">
+      <div class="panel-heading">Log</div>
+      <div class="panel-body">
+        <div id="console">
+          <div><span class="prompt">server$</span>&nbsp;<span class="message">waiting for upload.</span>
+          </div>
+        </div>
+      </div>
+    </div>
     <div id="dzUploadForm">
     </div>
   </layout-put>
 
   <layout-put into="script">
     <script type="text/javascript">
+      var con = {
+        success: function(ref, msg) {
+          this.log(ref, msg, 'success');
+        },
+        error: function(ref, msg) {
+          this.log(ref, msg, 'error');
+        },
+        info: function(ref, msg) {
+          this.log(ref, msg, 'info');
+        },
+        log: function(ref, msg, type) {
+          var l = $('#con' + ref);
+          if (l.length === 0) {
+            l = $('<div/>').attr('id', 'con' + ref);
+            $('#console').append(l);
+          }
+          l.addClass(type).text(msg);
+        }
+      };
       Dropzone.autoDiscover = false;
       Dropzone.options.dzUploadForm = {
         init: function() {
           var added = 0;
           var success = 0;
           var error = 0;
+          var conref = 0;
 
           function invalidate() {
             var s = added === 0 ? 0 : Math.round(100 * success / added);
@@ -43,21 +92,25 @@
             $('.progress-bar-success').css('width', '' + s + '%').attr('aria-valuenow', s);
             $('.progress-bar-danger').css('width', '' + e + '%').attr('aria-valuenow', e);
           }
-          this.on('addedfile', function() {
+          this.on('addedfile', function(f) {
+            f.conref = conref++;
             ++added;
             invalidate();
           })
-          this.on('success', function() {
+          this.on('success', function(f) {
+            con.success(f.conref, 'uploaded ' + f.name);
             ++success;
             invalidate();
           })
-          this.on('error', function() {
+          this.on('error', function(f, msg) {
+            con.error(f.conref, f.name + ': ' + msg);
             ++error;
             invalidate();
           })
+          this.on('sending', function(f) {
+            con.info(f.conref, 'uploading ' + f.name);
+          });
           this.on('totaluploadprogress', function(percent) {
-            /*var p = '' + percent;
-            $('.progress-bar').css('width', p + '%').attr('aria-valuenow', p);*/
           });
           this.on('error', function() {
             $('.progress-bar').addClass('progress-bar-danger');
@@ -65,10 +118,16 @@
         }
       };
       $(function() {
+        $('#progress').click(function() {
+          $('#dzUploadForm').toggle();
+          $('#console-panel').toggle();
+        });
         // request id for new upload
+        con.info('batch','requesting new upload session...')
         $.getJSON("${data.mkrel('newbatch')}", function(batch) {
           $('#dzUploadForm').addClass('dropzone').attr('action', batch.url);
           Dropzone.discover();
+          con.info('batch','initiated new upload session')
         });
       });
     </script>
