@@ -1,0 +1,34 @@
+<layout-use template="../../shared/views/layout.marko">
+  <layout-put into="title">$data.title</layout-put>
+  <layout-put into="content">
+
+    <div class="well help-block">
+      <p>
+        Publications are the working class heroes behind single source imaging.
+      </p>
+      <p>
+        <ul>
+          <li>No image should leave the building unless with a stylish url</li>
+          <li>Images should be resized, cropped and stripped of all EXIF and thumbnail junk before facing your audience</li>
+        </ul>
+      </p>
+      <a href="${data.mkrel('new')}" class="btn bt-lg btn-success">Create a new one, a real good one</a>
+    </div>
+    <for each="publication in data.publications">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          $publication.name - <strong>$publication.route</strong>
+        </div>
+        <div class="panel-body">
+          <p>
+            $publication.description
+          </p>
+          <pre><code data-language="javascript">$publication.script</code></pre>
+        </div>
+        <div class="panel-footer">
+          <a type="button" class="btn btn-default" href="${data.mkrel('edit/'+publication.id)}">Edit</a>
+        </div>
+      </div>
+    </for>
+  </layout-put>
+</layout-use>
