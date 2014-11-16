@@ -43,13 +43,13 @@
       });
     }
 
-    function getEditModel(req, cb) {
+    function getEditModel(req, res, next, cb) {
       app.get('repo').query(function(model, cb) {
           return cb(null, model.getPublication(req.params.id));
         },
         function(err, publication) {
           if (!publication) {
-            return cb(new Error('Not found'));
+            return next();
           }
           cb(null, {
             title: publication.name,

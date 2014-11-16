@@ -21,11 +21,14 @@
 
   module.exports = function(app, options) {
 
-    routeHelper.useRoute(app, '/lwis')
-      .get('/', routeHelper.html('./views/index.marko', {
+    routeHelper.useRoute(app, '/')
+      .get('/', function(req, res) {
+        return res.redirect('/lwis');
+      })
+      .get('/lwis', routeHelper.html('./views/index.marko', {
         title: 'lwis'
       }))
-      .get('/credits', routeHelper.html('./views/credits.marko', function(req, cb) {
+      .get('/lwis/credits', routeHelper.html('./views/credits.marko', function(req, cb) {
         cb(null, {
           title: 'Credits',
           credits: _credits

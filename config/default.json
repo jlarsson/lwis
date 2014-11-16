@@ -16,21 +16,7 @@
       },
       "./modules/main/main.js": {},
       "./modules/publication/publication.js": {},
-      "./modules/upload/upload.js": {},
-
-      "./routes/main/index": {
-        "base": "/"
-      },
-      "./routes/repo/index": {
-        "base": "/admin/repository"
-      },
-      "./routes/upload/index": {
-        "base": "/admin/upload"
-      },
-
-
-      "./routes/publication": {}
+      "./modules/upload/upload.js": {}
     }
-
   }
 }

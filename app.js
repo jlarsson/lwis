@@ -16,6 +16,8 @@ var app = express();
 app.set('appdata_path', path.resolve(__dirname, 'appdata'));
 app.set('tmp_path', path.resolve(__dirname, 'tmp'));
 
+// NOTE: view engine is not used for this applications normal operations
+// Instead each module has itts own strkcture of routes and views
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 

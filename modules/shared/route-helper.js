@@ -12,7 +12,9 @@
     var localTemplateCache = {};
 
     function useRoute(app, path) {
-      var router = new express.Router({strict: true});
+      var router = new express.Router({
+        strict: true
+      });
       app.use(path, router);
       return router;
     }
@@ -32,14 +34,36 @@
         localTemplateCache[templatePath] = template;
       }
 
-      return function(req, res) {
+      return function(req, res, next) {
         res.set('Content-Type', 'text/html; charset=utf-8');
 
         if (model instanceof Function) {
-          return model(req, function(err, data) {
+          var cb = function(err, data) {
+            if (err) {
+              return next(err);
+            }
             return template.render(data, res);
-          })
+          };
+          if (model.length == 1) {
+            return model(cb);
+          }
+          if (model.length == 2) {
+            return model(req, cb);
+          }
+          if (model.length == 3) {
+            return model(req, res, cb);
+          }
+          if (model.length == 4) {
+            return model(req, res, next, cb);
+          }
 
+          /*
+          return model(req, function(err, data) {
+            if (err){
+              return next(err);
+            }
+            return template.render(data, res);
+          })*/
         }
         return template.render(model, res);
       }

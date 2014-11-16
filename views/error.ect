@@ -1,5 +1,4 @@
 <% extend 'layout.ect' %>
 
-<h1><%= @message %></h1>
-<h2><%= @error.status %></h1>
-<pre><%- @error.stack %></pre>
+<h1><%= @error.status %> - <%= @message %></h1>
+<pre><code data-language="javascript"><%- @error.stack %></code></pre>
