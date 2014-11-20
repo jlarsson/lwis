@@ -18,7 +18,7 @@
       if (!(p && p.id)) {
         throwValidationError('id', 'Publications must have an id');
       }
-      return f;
+      return p;
     })
     .method('add', function(publication) {
       var n = this.validate(_.defaults({}, publication, {

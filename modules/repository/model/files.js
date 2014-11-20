@@ -32,7 +32,9 @@
       return this.annotations.updateFile(this.files[id] || null);
     })
     .method('getAll', function() {
-      return _.values(this.files);
+      return _(this.files).map(function(f) {
+        return this.annotations.updateFile(f);
+      }.bind(this)).value();
     })
     .toClass();
 

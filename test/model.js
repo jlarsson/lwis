@@ -127,3 +127,46 @@ describe("Files", function() {
     model.getFile('f').a.should.equal(1);
   })
 });
+
+
+describe('stress', function() {
+  var model;
+  beforeEach(function() {
+    model = modelFactory();
+  });
+
+  it('define annotation, add lots of files and the change default for annotation', function() {
+    model.addAnnotation({
+      id: 'a',
+      name: 'a',
+      type: 'bool',
+      value: false
+    });
+
+    var N = 100000;
+    for (var i = 0; i < 100; ++i) {
+      model.addFile({
+        id: 'f' + i,
+        name: 'file ' + i
+      });
+    }
+    var files = model.getFiles();
+    for (var i = 0; i < files.length; ++i) {
+      var f = files[i];
+      f.ext.a.should.equal(false);
+    }
+
+    model.addAnnotation({
+      id: 'a',
+      name: 'a',
+      type: 'bool',
+      value: true
+    });
+    files = model.getFiles();
+    for (var i = 0; i < files.length; ++i) {
+      var f = files[i];
+      f.ext.a.should.equal(true);
+    }
+  })
+
+})
