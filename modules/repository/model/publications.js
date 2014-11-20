@@ -20,7 +20,7 @@
       }
       return p;
     })
-    .method('add', function(publication) {
+    .method('set', function(publication) {
       var n = this.validate(_.defaults({}, publication, {
         '@': {},
         ext: {}
@@ -28,7 +28,7 @@
       return this.publications[n.id] = n;
     })
     .method('get', function(id) {
-      return this.publications[id] || null;
+      return this.publications[id];
     })
     .method('getAll', function() {
       return _.values(this.publications);

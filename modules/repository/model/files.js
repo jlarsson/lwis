@@ -11,9 +11,9 @@
   }
 
   var Files = classBuilder()
-    .construct(function(annotations) {
-      this.annotations = annotations;
+    .construct(function() {
       this.files = {};
+      this.annotate = null; // set by annotator
     })
     .method('validate', function(f) {
       if (!(f && f.id)) {
@@ -21,20 +21,23 @@
       }
       return f;
     })
-    .method('add', function(a) {
+    .method('set', function(a) {
       var n = this.validate(_.defaults({}, a, {
-        '@': {},
+        '@': {
+          ext: {}
+        },
         ext: {}
       }));
-      return this.files[n.id] = n;
+      return this.files[n.id] = this.annotate(n);
     })
     .method('get', function(id) {
-      return this.annotations.updateFile(this.files[id] || null);
+      return this.files[id];
     })
     .method('getAll', function() {
-      return _(this.files).map(function(f) {
-        return this.annotations.updateFile(f);
-      }.bind(this)).value();
+      return _.values(this.files);
+    })
+    .method('each', function(f){
+      _.each(this.files,f);
     })
     .toClass();
 

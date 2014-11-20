@@ -127,11 +127,11 @@ console.log('annotation: %j', annotation);
         return res.json(errors);
       }
 
-      app.get('repo').execute('update-annotation', annotation,
+      app.get('repo').execute('set-annotation', annotation,
         function(err, annotation) {
           if (err) {
             return res.json({
-              general: err
+              general: err.message
             });
           }
           if (!annotation) {

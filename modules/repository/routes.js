@@ -23,6 +23,7 @@
           return cb(null, model.getFiles());
         },
         function(err, files) {
+          console.log(files);
           var pageSize = 20;
           var pageIndex = Number(req.params.pageIndex) || 0;
           if (pageIndex * pageSize >= files.length) {

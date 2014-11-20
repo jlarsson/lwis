@@ -87,7 +87,7 @@
       },
       function addFileToRepo(cb) {
         debug('addFileToRepo');
-        app.get('repo').execute('add-file', fileData, mkcb1(cb));
+        app.get('repo').execute('set-file', fileData, mkcb1(cb));
       },
       function onFilAddedToRepo(cb) {
         debug('onFileAdded');

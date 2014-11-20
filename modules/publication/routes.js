@@ -73,7 +73,7 @@
         return res.json(errors);
       }
 
-      app.get('repo').execute('update-publication', publication,
+      app.get('repo').execute('set-publication', publication,
         function(err, publication) {
           if (!publication) {
             return next(err);

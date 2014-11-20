@@ -10,59 +10,17 @@
     throw error;
   }
 
-  function ensureFileRuntimeProps(file) {
-    var r = file['@'] || (file['@'] = {});
-    return r.ext || (r.ext = {});
-  }
-
-  function createExtendNoop() {
-    return {
-      update: function(file) {
-        return this.next ? this.next.update(file) : this;
-      }
-    };
-  }
-
-  function createExtendCopyFromTo(from, to) {
-    return {
-      update: function(file) {
-        file.ext[to] = file.ext[from];
-        return this.next ? this.next.update(file) : this;
-      }
-    };
-  }
-
-  function createExtendDefaultValue(annotation) {
-    return {
-      update: function(file) {
-        var props = ensureFileRuntimeProps(file);
-        if (props.ign) {
-          if (props.ign.keys[annotation.id]) {
-            return this.next ? this.next.update(file) : this;
-          }
-        }
-        file.ext[annotation.name] = annotation.value;
-        return this.next ? this.next.update(file) : this;
-      }
-    };
-  }
-
   var Annotations = classBuilder()
-    .construct(function() {
-      this.headExtender = {
-        update: function(file) {
-          return this.next ? this.next.update(file) : this;
-        }
-      };
-      this.tailExtender = this.headExtender;
-      this.defaultIgnoreSet = {
-        key: '',
-        keys: {}
-      };
-      this.ignoreSets = {
-        '': this.defaultIgnoreSet
-      };
+    .construct(function(files) {
+      this.files = files;
       this.annotations = {};
+      files.annotate = function(file) {
+        _(this.annotations).reduce(function(ext, a) {
+          ext[a.name] = a.value;
+          return ext;
+        }, file.ext);
+        return file;
+      }.bind(this);
     })
     .method('validate', function(a) {
       if (!a.id) {
@@ -73,17 +31,7 @@
       }
       return a;
     })
-    .method('updateFile', function(f) {
-      if (f) {
-        var props = ensureFileRuntimeProps(f);
-        var extend = props.extend || this.headExtender;
-        if (extend.next) {
-          props.extend = extend.update(f);
-        }
-      }
-      return f;
-    })
-    .method('add', function(a) {
+    .method('set', function(a) {
       var n = this.validate(_.defaults({}, a, {
         name: '',
         type: 'string',
@@ -92,16 +40,87 @@
       }));
 
       var existing = this.annotations[n.id];
-      var isNameChange = existing && (existing.name != n.name);
-      var isTypeChange = existing && (existing.type != n.type);
-      if (isNameChange && !isTypeChange) {
-        this.tailExtender = (this.tailExtender.next = createExtendCopyFromTo(existing.name, n.name));
-      } else {
-        this.tailExtender = (this.tailExtender.next = createExtendDefaultValue(n));
-      }
-      this.annotations[n.id] = n;
 
-      return n;
+      var typeOfChange = '';
+      typeOfChange += existing && (existing.name != n.name) ? 'n' : '';
+      typeOfChange += existing && (existing.type != n.type) ? 't' : '';
+      typeOfChange += existing && (existing.value != n.value) ? 'v' : '';
+
+      var f;
+      switch (typeOfChange) {
+        case '':
+          f = function(file) {
+            file.ext[n.name] = n.value;
+          };
+          break;
+        case 'ntv':
+          f = function changeNameTypeValue(file) {
+            var x = file['@'].ext;
+            var y = file.ext;
+            if (x[existing.name]) {
+              delete x[existing.name];
+              delete y[existing.name];
+              x[name.name] = true;
+            }
+            delete y[existing.name];
+            y[n.name] = n.value;
+          }
+          break;
+        case 'nv':
+          f = function changeName(file) {
+            var x = file['@'].ext;
+            var y = file.ext;
+            if (x[existing.name]) {
+              delete x[existing.name];
+              x[name.name] = true;
+              y[n.name] = y[existing.value];
+            } else {
+              y[n.name] = n.value;
+            }
+            delete y[existing.name];
+          }
+          break;
+        case 'nt':
+          f = function changeName(file) {
+            var x = file['@'].ext;
+            var y = file.ext;
+            if (x[existing.name]) {
+              delete x[existing.name];
+              x[name.name] = true;
+            }
+            y[n.name] = n.value;
+            delete y[existing.name];
+          }
+          break;
+        case 'tv':
+        case 't':
+          f = function resetToDefault(file) {
+            delete file['@'].ext[n.name];
+            f.ext[n.name] = n.value;
+          }
+          break;
+        case 'n':
+          f = function changeName(file) {
+            var x = file['@'].ext;
+            var y = file.ext;
+            if (x[existing.name]) {
+              delete x[existing.name];
+              x[name.name] = true;
+            }
+            y[n.name] = y[existing.name];
+            delete y[existing.name];
+          }
+          break;
+        case 'v':
+          f = function applyDefaultValueChange(file) {
+            if (!file['@'].ext[n.name]) {
+              file.ext[n.name] = n.value;
+            }
+          }
+          break;
+      }
+      this.files.each(f);
+      return this.annotations[n.id] = n;
     })
     .method('get', function(id) {
       return this.annotations[id];
@@ -113,32 +132,7 @@
       if (file) {
         var annotation = this.annotations[id];
         if (annotation) {
-          // bring file up to date
-          file = this.updateFile(file);
-          // get current ignore set
-          var props = ensureFileRuntimeProps(file);
-          var ignoreSet = props.ign || this.defaultIgnoreSet;
-
-          // do we need to expand ignore set?
-          if (ignoreSet.keys[annotation.id] === undefined) {
-            // calculate keys for new ignore set
-            var newKeys = _.values(ignoreSet.keys).concat([annotation.id]);
-            newKeys.sort();
-            var newKey = newKeys.join('\n');
-            var newIgnoreSet = this.ignoreSets[newKey];
-            if (!newIgnoreSet) {
-              newIgnoreSet = {
-                key: newKey,
-                keys: _.reduce(newKeys, function(agg, k) {
-                  agg[k] = true;
-                  return agg;
-                }, {})
-              };
-              this.ignoreSets[newKey] = newIgnoreSet;
-            }
-            ignoreSet = newIgnoreSet;
-            props.ign = ignoreSet;
-          }
+          file['@'].ext[annotation.name] = true;
           file.ext[annotation.name] = value;
         }
       }

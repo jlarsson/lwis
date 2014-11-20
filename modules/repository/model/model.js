@@ -8,13 +8,13 @@
 
   var Model = classBuilder()
     .construct(function() {
-      this.annotations = Annotations();
-      this.files = Files(this.annotations);
+      this.files = Files();
+      this.annotations = Annotations(this.files);
       this.publications = Publications();
     })
     // File api
-    .method('addFile', function(file) {
-      return this.files.add(file);
+    .method('setFile', function(file) {
+      return this.files.set(file);
     })
     .method('getFile', function(id) {
       return this.files.get(id);
@@ -26,8 +26,8 @@
       return this.annotations.annotateFile(annotationId, this.files.get(fileId), value)
     })
     // Annotations (i.e. managed properties on files)
-    .method('addAnnotation', function(annotation) {
-      return this.annotations.add(annotation);
+    .method('setAnnotation', function(annotation) {
+      return this.annotations.set(annotation);
     })
     .method('getAnnotation', function(id) {
       return this.annotations.get(id);
@@ -36,8 +36,8 @@
       return this.annotations.getAll();
     })
     // Publications, i.e transformating routes
-    .method('addPublication', function(publication) {
-      return this.publications.add(publication);
+    .method('setPublication', function(publication) {
+      return this.publications.set(publication);
     })
     .method('getPublication', function(id) {
       return this.publications.get(id);
