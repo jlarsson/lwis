@@ -1,9 +1,7 @@
 (function(module) {
   'use strict';
 
-  var express = require('express');
   var routeHelper = require('../shared/route-helper')(__dirname);
-
   var creditsto = require('credits-to');
   var _ = require('lodash');
 

@@ -56,6 +56,8 @@
           if (model.length == 4) {
             return model(req, res, next, cb);
           }
+          console.log('applying default...')
+          cb(null, model());
 
           /*
           return model(req, function(err, data) {

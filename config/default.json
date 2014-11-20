@@ -16,7 +16,8 @@
       },
       "./modules/main/main.js": {},
       "./modules/publication/publication.js": {},
-      "./modules/upload/upload.js": {}
+      "./modules/upload/upload.js": {},
+      "./modules/annotation/annotation.js": {}
     }
   }
 }
