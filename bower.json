@@ -19,6 +19,7 @@
     "jquery-form": "~3.46.0",
     "rainbow": "~1.1.9",
     "fontawesome": "~4.2.0",
-    "codemirror": "~4.7.0"
+    "codemirror": "~4.7.0",
+    "setimmediate2": "~1.1.4"
   }
 }

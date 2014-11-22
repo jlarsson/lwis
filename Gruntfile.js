@@ -19,6 +19,7 @@ module.exports = function (grunt) {
             js: {
                 src: [
                     'bower_components/jquery/dist/jquery.js',
+                    'bower_components/setimmediate2/setimmediate.js',
                     'bower_components/jquery-form/jquery.form.js',
                     'bower_components/bootstrap/dist/js/bootstrap.js',
                     'bower_components/dropzone/downloads/dropzone.js',
