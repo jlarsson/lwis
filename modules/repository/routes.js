@@ -15,15 +15,32 @@
     }
     routeHelper.useRoute(app, '/lwis/repository')
       .get('/details/:id', routeHelper.html('./views/details.marko', getDetailsModel))
-      .get('/', routeHelper.html('./views/index.marko', getIndexModel))
-      .get('/:pageIndex?', routeHelper.html('./views/index.marko', getIndexModel))
+      .get('/', routeHelper.html('./views/index-flow.marko', getIndexFlowModel))
+      //      .get('/', routeHelper.html('./views/index-paged.marko', getIndexPagedModel))
+      //      .get('/:pageIndex?', routeHelper.html('./views/index-paged.marko', getIndexModel))
 
-    function getIndexModel(req, cb) {
+    function getIndexFlowModel(req, cb) {
+      req.app.get('repo').query(function(model) {
+          return model.getFiles();
+        },
+        function(err, files) {
+          var model = {
+            title: 'Repository',
+            files: files,
+            fileCount: files.length,
+            formatSize: filesize,
+            mkrel: mkrel,
+          }
+          return cb(err, model);
+        });
+    };
+
+
+    function getIndexPagedModel(req, cb) {
       req.app.get('repo').query(function(model, cb) {
           return cb(null, model.getFiles());
         },
         function(err, files) {
-          console.log(files);
           var pageSize = 20;
           var pageIndex = Number(req.params.pageIndex) || 0;
           if (pageIndex * pageSize >= files.length) {

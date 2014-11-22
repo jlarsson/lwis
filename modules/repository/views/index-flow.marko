@@ -1,0 +1,60 @@
+<layout-use template="../../shared/views/layout.marko">
+  <layout-put into="title">$data.title</layout-put>
+  <layout-put into="script">
+    <script type="text/javascript">
+      (function ($){
+        $(function (){
+          $('img').error(function (){
+            $(this).replaceWith($('<i class="fa fa-file-image-o fa-5x"></i>'));
+          });
+        });
+      })(jQuery);
+    </script>
+  </layout-put>
+  <layout-put into="content">
+    <div class="container-fluid">
+    <div class="row" data-lazy="images">
+      <for each="file in data.files">
+        <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 asset-box img-thumbnail">
+          <a href="${data.mkrel('details/'+file.id)}">
+            <div class="image-box">
+              <if test="file.image">
+                <img class="img-responsive asset-image lazy" data-src="/admin/tn/$file.id" alt="$file.file.name" />
+              </if>
+              <else>
+                <i class="fa fa-file-o fa-5x"></i>
+              </else>
+            </div>
+          <div class="text-center asset-text small">$file.file.name</div>
+        </a>
+      </div>
+      </for>
+    </div>
+  </div>
+  </layout-put>
+
+  <layout-put into="head">
+    <style type="text/css">
+      .asset-box{
+        text-align: center;
+      }
+      .image-box {
+        width: 165px;
+        height: 165px;
+        margin: auto;
+      }
+      .asset-image{
+        margin: auto;
+      }
+      .asset-text {
+        display: inline-block;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-align: center;
+        max-width: 170px;
+      }
+    </style>
+  </layout-put>
+
+</layout-use>

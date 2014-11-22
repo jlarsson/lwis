@@ -1,41 +1,43 @@
 <layout-use template="../../shared/views/layout.marko">
   <layout-put into="title">$data.title</layout-put>
   <layout-put into="content">
-    <h3>Software and licenses</h3>
-    <table class="table table-condensed table-striped table-hover">
-      <tr>
-        <th>Name</th>
-        <th>Versions</th>
-        <th>Repository</th>
-        <th>Licenses</th>
-      </tr>
-      <for each="credit in data.credits">
+    <div class="container">
+      <h3>Software and licenses</h3>
+      <table class="table table-condensed table-striped table-hover">
         <tr>
-          <td>
-            $credit.name
-            <br/>
-            <small>$credit.description</small>
-          </td>
-          <td>
-            <for each="v in credit.versions">$v
-              <br/>
-            </for>
-          </td>
-          <td>
-            <for each="r in credit.repositories">
-              <a href="$r">$r</a>
-              <br/>
-            </for>
-          </td>
-          <td>
-            <for each="l in credit.licenses">
-              <a href="http://opensource.org/licenses/${l}">
-                <a href="$l">$l</a>
-                <br/>
-            </for>
-          </td>
+          <th>Name</th>
+          <th>Versions</th>
+          <th>Repository</th>
+          <th>Licenses</th>
         </tr>
-      </for>
-    </table>
+        <for each="credit in data.credits">
+          <tr>
+            <td>
+              $credit.name
+              <br/>
+              <small>$credit.description</small>
+            </td>
+            <td>
+              <for each="v in credit.versions">$v
+                <br/>
+              </for>
+            </td>
+            <td>
+              <for each="r in credit.repositories">
+                <a href="$r">$r</a>
+                <br/>
+              </for>
+            </td>
+            <td>
+              <for each="l in credit.licenses">
+                <a href="http://opensource.org/licenses/${l}">
+                  <a href="$l">$l</a>
+                  <br/>
+              </for>
+            </td>
+          </tr>
+        </for>
+      </table>
+    </div>
   </layout-put>
 </layout-use>
