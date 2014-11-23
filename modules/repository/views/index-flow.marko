@@ -15,7 +15,8 @@
     <div class="container-fluid">
     <div class="row" data-lazy="images">
       <for each="file in data.files">
-        <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 asset-box img-thumbnail">
+        <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 asset-box-outer">
+          <div class="asset-box img-thumbnail">
           <a href="${data.mkrel('details/'+file.id)}">
             <div class="image-box">
               <if test="file.image">
@@ -28,6 +29,7 @@
           <div class="text-center asset-text small">$file.file.name</div>
         </a>
       </div>
+      </div>
       </for>
     </div>
   </div>
@@ -35,7 +37,12 @@
 
   <layout-put into="head">
     <style type="text/css">
+      .asset-box-outer{
+        padding: 2px;
+        margin: 0;
+      }
       .asset-box{
+        __margin:2px;
         text-align: center;
       }
       .image-box {

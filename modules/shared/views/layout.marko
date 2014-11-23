@@ -9,6 +9,7 @@
   <meta name="description" content="" />
   <meta name="keywords" content="" />
   <link rel="stylesheet" href="/css/styles.min.css" />
+  <link rel="stylesheet" href="/lwis/skin/custom.css" />
   <layout-placeholder name="head" />
 </head>
 
@@ -41,6 +42,29 @@
           <li>
             <a href="/lwis/annotation">Annotations</a>
           </li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Skin <span class="caret"></span></a>
+            <ul class="dropdown-menu" role="menu">
+              <li><a href="#" class="skin-picker" data-skin="">Default</a></li>
+              <li class="divider"></li>
+              <li><a href="#" class="skin-picker" data-skin="cerulean">Ceruelan</a></li>
+              <li><a href="#" class="skin-picker" data-skin="cosmo">Cosmo</a></li>
+              <li><a href="#" class="skin-picker" data-skin="cyborg">Cyborg</a></li>
+              <li><a href="#" class="skin-picker" data-skin="darkly">Darkly</a></li>
+              <li><a href="#" class="skin-picker" data-skin="flatly">Flatly</a></li>
+              <li><a href="#" class="skin-picker" data-skin="journal">Journal</a></li>
+              <li><a href="#" class="skin-picker" data-skin="lumen">Lumen</a></li>
+              <li><a href="#" class="skin-picker" data-skin="paper">Paper</a></li>
+              <li><a href="#" class="skin-picker" data-skin="readable">Readable</a></li>
+              <li><a href="#" class="skin-picker" data-skin="sandstone">Sandstone</a></li>
+              <li><a href="#" class="skin-picker" data-skin="simplex">Simplex</a></li>
+              <li><a href="#" class="skin-picker" data-skin="slate">Slate</a></li>
+              <li><a href="#" class="skin-picker" data-skin="spacelab">Spacelab</a></li>
+              <li><a href="#" class="skin-picker" data-skin="superhero">Superhero</a></li>
+              <li><a href="#" class="skin-picker" data-skin="united">United</a></li>
+              <li><a href="#" class="skin-picker" data-skin="yeti">Yeti</a></li>
+            </ul>
+          </li>
         </ul>
         <layout-placeholder name="navigation" />
       </div>
@@ -51,6 +75,16 @@
   <layout-placeholder name="content" />
   <!--<include template="./footer.marko" />-->
   <script type="text/javascript" src="/js/scripts.min.js"></script>
+  <script type="text/javascript">
+    (function ($){
+      $(function (){
+        $('.skin-picker').click(function (){
+          $.post('/lwis/skin/setcustom', {skin: $(this).attr('data-skin')})
+          .done(function (){ location.reload(true); });
+        });
+      })
+    })(jQuery);
+  </script>
   <layout-placeholder name="script" />
 </body>
 

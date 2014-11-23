@@ -50,8 +50,6 @@
         date_value: ''
       };
       values[annotation.type + '_value'] = annotation.value;
-console.log('annotation: %j', annotation);
-      console.log('type values: %j', values);
       return values;
     }
 
