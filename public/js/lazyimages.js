@@ -2,22 +2,40 @@
   'use strict';
 
   function loadVisibleImages() {
-    var i = 0;
     var q = this.lazyImages;
-    while (i < q.length) {
+
+    if (q.length === 0){
+      return;
+    }
+
+    var wh = $(window).height();
+    var ww = $(window).width();
+
+    var loaded = false;
+    for (var i = 0; i < q.length; ++i){
       var img = q[i];
       var rect = img.getBoundingClientRect();
-      var visible = (rect.top >= 0) && (rect.left >= 0) && (rect.top <= (window.innerHeight || document.documentElement.clientHeight));
+
+      var visible = (rect.top <= wh)
+        && (rect.left <= ww)
+        && (Math.max(rect.bottom, rect.top + this.minHeight) >= 0)
+        && (Math.max(rect.right, rect.left + this.minWidth) >= 0);
+
       if (visible) {
-        q.splice(i, 1);
+        loaded = true;
+        q[i] = null;
         $(img).attr('src', $(img).attr('data-src'));
-      } else {
-        i = i + 1;
       }
+    }
+    if (loaded){
+      this.lazyImages =  this.lazyImages.filter(function (v){ return v; });
     }
   }
 
   function LazyImages(element, options) {
+    this.minWidth = Number($(element).attr('data-lazy-min-width') || 0);
+    this.minHeight = Number($(element).attr('data-lazy-min-height') || 0);
+
     this.lazyImages = $('img.lazy', element).get();
     var self = this;
     $(window).scroll(function() {
