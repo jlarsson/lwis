@@ -1,8 +1,58 @@
 <layout-use template="../../shared/views/layout.marko">
+  <layout-put into="script">
+  <script type="text/javascript">
+  (function ($){
+    $(function (){
+      $('#preview').error(function (){
+        $('#preview').addClass('hidden');
+        $('#preview-error').removeClass('hidden');
+      });
+    });
+  })(jQuery);
+  </script>
+</layout-put>
+
   <layout-put into="title">$data.title</layout-put>
   <layout-put into="content">
     <div class="container">
-      <pre><code data-language="javascript">$!{JSON.stringify(data.file,null,2)}</code></pre>
+
+      <div class="text-center">
+      <if test="data.file.image">
+        <img id="preview" class="img-thumbnail img-responsive" src="/lwis/preview/${data.file.id}"/>
+        <div id="preview-error" class="alert alert-warning hidden">
+          Failed to load image.
+        </div>
+      </if>
+      </div>
+
+      <div class="container">
+        <div class="col-md-8">
+          <dl class="dl-horizontal">
+            <dt>File name</dt>
+            <dd>$data.file.file.name</dd>
+            <dt>File size</dt>
+            <dd>${data.formatSize(data.file.file.size)}</dd>
+            <if test="data.file.image">
+              <dt>Image width</dt><dd>${data.file.image.width}px</dd>
+              <dt>Image height</dt><dd>${data.file.image.height}px</dd>
+            </if>
+          </dl>
+        </div>
+        <div class="col-md-4">
+          <a class="btn btn-primary btn-block" href="/lwis/download/${data.file.id}">Download $data.file.file.name</a>
+        </div>
+      </div>
+
+      <div class="container col-md12">
+        <pre><code data-language="javascript">$!{JSON.stringify(data.file,null,2)}</code></pre>
+      </div>
     </div>
   </layout-put>
+
+
+  <layout-put into="head">
+    <style type="text/css">
+    </style>
+</layout-put>
+
 </layout-use>

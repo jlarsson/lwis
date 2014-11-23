@@ -18,17 +18,24 @@
 
       model.setPublication({
         id: '58a13e35-580b-4978-9efc-02dbcc2cf46f',
-        name: 'lwis default Thumbnails',
+        name: 'Thumbnails',
         description: 'Thumbnails for the administrative pages',
-        route: '/admin/tn/:id',
+        route: '/lwis/thumbnail/:id',
         script: 'function filter() {\n  return (this.data.id === id);\n}\nfunction transform(response){\n if (response.accepts(\'image/*\') && this.is(\'image/*\')) return response.image(\'jpg\').resize(165,165).noProfile();\n}'
       });
       model.setPublication({
         id: '6d781f94-a454-4f64-b17d-9200c0116167',
-        name: 'lwis default Downloads',
+        name: 'Preview',
+        description: 'Previews for the administrative pages',
+        route: '/lwis/preview/:id',
+        script: 'function filter() {\n  return (this.data.id === id);\n}\nfunction transform(response){\n if (response.accepts(\'image/*\') && this.is(\'image/*\')) return response.image(\'jpg\').resize(1024,1024).noProfile();\n}'
+      });
+      model.setPublication({
+        id: 'e6e75bd4-114d-486a-8037-f205013057c6',
+        name: 'Download',
         description: 'Downloads for the administrative pages',
-        route: '/admin/dl/:id',
-        script: 'function filter() {\n  return this.data.id === id;\n}\nfunction transform(response)\n{\n // Do nothing and pass on to default handling\n}'
+        route: '/lwis/download/:id',
+        script: 'function filter() {\n  return (this.data.id === id);\n}\nfunction transform(response){\n}'
       });
 
       model.setAnnotation({

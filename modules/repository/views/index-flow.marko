@@ -20,7 +20,7 @@
           <a href="${data.mkrel('details/'+file.id)}">
             <div class="image-box">
               <if test="file.image">
-                <img class="img-responsive asset-image lazy" data-src="/admin/tn/$file.id" alt="$file.file.name" />
+                <img class="img-responsive asset-image lazy" data-src="/lwis/thumbnail/$file.id" alt="$file.file.name" />
               </if>
               <else>
                 <i class="fa fa-file-o fa-5x"></i>
@@ -42,7 +42,6 @@
         margin: 0;
       }
       .asset-box{
-        __margin:2px;
         text-align: center;
       }
       .image-box {
