@@ -19,6 +19,7 @@
     "credits-to": "0.0.2",
     "debug": "~2.0.0",
     "ect": "~0.5.9",
+    "esprima": "^1.2.2",
     "express": "~4.9.0",
     "express-validator": "^2.6.0",
     "filesize": "^2.0.4",

@@ -6,6 +6,7 @@
   var classBuilder = require('ryoc');
   var _ = require('lodash');
   var debug = require('debug')('lwis:scripting');
+  var unsafeScriptDetector = require('./unsafe-script-detector');
 
   var AbstractScript = classBuilder()
     .construct(function(options, params) {
@@ -67,6 +68,9 @@ var Parser = classBuilder()
     try {
       options.error = null;
       options.vmScript = vm.createScript(scriptCode);
+
+      // analyze script code for illegal constructs
+      unsafeScriptDetector(options.scriptCode);
 
       _(options.functionNames).each(function(name) {
         var glob = {};
